@@ -9,12 +9,12 @@ import { ModalController } from '@ionic/angular';
 import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'library.page.html',
-  styleUrls: ['library.page.scss']
+  selector: 'app-tab5',
+  templateUrl: 'playlist.page.html',
+  styleUrls: ['playlist.page.scss']
 })
 
-export class LibraryPage implements OnInit {
+export class PlaylistPage implements OnInit {
 
   allSongs: Song[] = [];
 
@@ -37,12 +37,19 @@ export class LibraryPage implements OnInit {
 
   ngOnInit() {
     this.getSongsFromDB();
+    //this.getSongsFromFirebase();
   }
 
-  savePlaylust(song: Song, index: number): void {
-    
-    this.songService.savePlaylistmodal(song);
+  toggleReorder(): void {
+  
+      const reorderGroup = document.getElementById('reorder');
+      reorderGroup.disabled = !reorderGroup.disabled;
+      reorderGroup.addEventListener('ionItemReorder', ({detail}) => {
+        detail.complete(true);
+      });
+      
   }
+
 
   downloadSong(song: Song, index: number): void {
     this.helper.presentLoading('Downloading Song');
@@ -74,41 +81,23 @@ export class LibraryPage implements OnInit {
   }
 
   filterSongsByReleaseDate(songs: Song[]): void {
-    const currentDate = new Date();
-    // If it's a subscription user they only have access to songs since their signup date
-    if (this.auth.user.planType === 'subscription') {
-      songs = songs.filter(song => new Date(song.releaseDate) > new Date(this.auth.user.signUpDate));
-    } else if (this.auth.user.planType === 'charge' && !this.auth.user.planName.includes('Early')) {
-      songs = songs.filter(song => new Date(song.releaseDate) > new Date('12/31/18'));
-    }
-    const filteredSongs = songs.filter(song => new Date(song.releaseDate) < currentDate);
-    filteredSongs.forEach(song => {
-      if (song.audioPath) {
-        switch (song.songType) {
-          case SongType.Normal:
-            this.normalSongs.push(song);
-            break;
-          case SongType.Instrumental:
-            this.instrumentalSongs.push(song);
-            break;
-          case SongType.BackgroundVocals:
-            this.backgroundVocalsSongs.push(song);
-            break;
-          case SongType.Other:
-            this.otherSongs.push(song);
-            break;
-          default:
-            alert('Invalid Song Type');
-        }
-      } else {
-        this.songsToDownload.push(song);
-      }
-    });
-    this.sortSongs();
+      
+    this.songsToDownload = songs;
+    
   }
 
+
+  reorderItems(indexes){
+    console.log(indexes);
+    
+    this.songService.updatePlaylistOrder(index);
+
+  };
+
   getSongsFromDB(): void {
-    this.nativeStorage.getItem('songs').then(dbSongs => {
+    this.nativeStorage.getItem('playlist').then(dbSongs => {
+      
+      console.log(dbSongs);
       this.allSongs = dbSongs;
       this.getSongsFromFirebase();
     }).catch(() => {
@@ -117,13 +106,14 @@ export class LibraryPage implements OnInit {
   }
 
   getSongsFromFirebase(): void {
-    console.log('get songs');
-    const songSub = this.songService.getSongs().subscribe(apiSongs => {
-      console.log(apiSongs);
-      this.addNewSongs(apiSongs);
+    console.log('--call-- Playlist page ');
+    console.log('get playlist songs');
+    const songSub = this.songService.getPlaylistSongs().subscribe(apiSongs => {
+      console.log(apiSongs);      
+      console.log('all songs playlist');
       console.log(this.allSongs);
-      this.filterSongsByReleaseDate(this.allSongs); // All Songs may just be dbSongs
-      songSub.unsubscribe();
+      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
+      
     });
   }
 
@@ -141,26 +131,7 @@ export class LibraryPage implements OnInit {
     return await modal.present();
   }
 
-  private addNewSongs(apiSongs: Song[]): void {
-    let addedSong = false;
-    apiSongs.forEach(apiSong => {
-      let foundSong = false;
-      for (let i = 0; i < this.allSongs.length; i++) {
-        const song = this.allSongs[i];
-        if (apiSong.title === song.title) {
-          foundSong = true;
-          break;
-        }
-      }
-      if (!foundSong) {
-        addedSong = true;
-        this.allSongs.push(apiSong);
-      }
-    });
-    if (addedSong) {
-      this.nativeStorage.setItem('songs', this.allSongs);
-    }
-  }
+
 
   private saveSongs(): void {
     const allSongs = this.normalSongs.concat(
