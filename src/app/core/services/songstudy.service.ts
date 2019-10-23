@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { SongStudy } from '../models/songstudy.model';
 
 @Injectable({
@@ -13,7 +14,8 @@ export class SongStudyService {
   songStudyCollection: AngularFirestoreCollection<SongStudy>;
 
   constructor(
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private auth: AngularFireAuth
   ) {
     this.songStudyCollection = this.db.collection<SongStudy>('songStudy');
   }
@@ -30,5 +32,18 @@ export class SongStudyService {
   getSpecificSongStudy(currentDate: string): Observable<SongStudy[]> {
     const quoteQuery = this.db.collection<SongStudy>('songStudy', ref => ref.where('date', '==', currentDate)).valueChanges();
     return quoteQuery;
+  }
+
+  addSongStudyAnswer(answer: String) {
+      var userEmail = window.localStorage.getItem('userEmail');
+
+      this.db.collection("songStudyAnswer").add({
+        userEmail:userEmail,
+        answer:answer
+      }).then((data)=>{
+        console(data);
+      }).catch((err)=>{
+        console.log(err);
+      })
   }
 }

@@ -110,6 +110,8 @@ export class Tab1Page implements OnInit {
             text: 'Submit',
             handler: data => {
               console.log(data.answer);
+
+              const songStudyAns = this.songStudyService.addSongStudyAnswer(data.answer);
             }
           }
         ]
