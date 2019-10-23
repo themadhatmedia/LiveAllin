@@ -8,6 +8,9 @@ import { Song } from '../models/song.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
+import { User } from '../models/user.model';
+
+
 @Injectable({ providedIn: 'root' })
 
 export class SongService {
@@ -16,6 +19,7 @@ export class SongService {
   meta: Observable<any>;
 
   songsCollection: AngularFirestoreCollection<Song>;
+  playlistCollection: AngularFirestoreCollection<Playlist>;
 
   constructor(
     private file: File,
@@ -30,10 +34,55 @@ export class SongService {
 
   private init(): void {
     this.songsCollection = this.db.collection<Song>('songs');
+    var userEmail = window.localStorage.getItem('userEmail');
+    /*this.playlistCollection = this.db.collection<Playlist>('playlist',
+      ref => ref.where('userEmail', '==', userEmail),
+      ref => ref.orderByChild('timestamp'));*/
+
+    this.playlistCollection = this.db.collection<Playlist>('playlist',
+      ref => ref.where('userEmail', '==', userEmail));
+
+
   }
 
+  
   getSongs(): Observable<Song[]> {
     return this.songsCollection.valueChanges();
+  }
+
+  getPlaylistSongs(): Observable<Song[]> {
+
+    return this.playlistCollection.valueChanges();
+  }
+
+  updatePlaylistOrder(index: index) {
+      
+      console.log(index);
+      this.db.collection("playlist").doc(index).update({         
+        timestamp:Date.now()
+      }).then((data)=>{ 
+        console(data); 
+      }).catch((err)=>{ 
+        console.log(err); 
+      })
+  }
+
+
+  savePlaylistmodal(song: Song) {
+      
+      
+      var userEmail = window.localStorage.getItem('userEmail');
+      
+      this.db.collection("playlist").add({ 
+        userEmail:userEmail,
+        userId:"1",
+        song:song,
+        timestamp:Date.now()
+      }).then((data)=>{ 
+        console(data); 
+      }).catch((err)=>{ 
+        console.log(err); 
+      })
   }
 
   downloadSongAudio(song: Song): Promise<any> {

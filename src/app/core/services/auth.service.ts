@@ -52,7 +52,11 @@ export class AuthService {
 
   login(email: string, password: string): Promise<any> {
     return this.auth.auth.signInWithEmailAndPassword(email, password).then(token => {
+
       console.log('token: ' + JSON.stringify(token));
+
+      window.localStorage.setItem('userEmail', token.user.email);
+      
       // const userQuery = this.db.collection<User>('users', ref => ref.where('email', '==', token.user.email)).valueChanges();
       // userQuery
       // .subscribe(docs => {
@@ -63,6 +67,7 @@ export class AuthService {
   }
 
   logout(): void {
+    window.localStorage.removeItem('userEmail');
     this.auth.auth.signOut();
   }
 
