@@ -7,9 +7,26 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-
+  <!-- <ion-list>
     <section *ngIf="songsToDownload.length > 0">
+      <ion-item-divider>
+        <ion-label>
+          Available to Download
+        </ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let song of songsToDownload; let index = index" (click)="downloadSong(song, index)">
+        <ion-label>{{ song.title }}</ion-label>
+        <div class="get">Get</div>
+      </ion-item>
+    </section>
+  </ion-list> -->
+
+  <!-- <ion-list reorder="true">
+    <ion-item *ngFor="let song of songsToDownload; let index = index">{{ song.title }}</ion-item>
+  </ion-list> -->
+
+
+  <section *ngIf="songsToDownload.length > 0">
       <ion-item-divider>
         <ion-label>
           Available to Download
@@ -20,6 +37,6 @@
         <ion-label> {{ song.title }}</ion-label>
         <div class="get" (click)="downloadSong(song, index)">Get</div>
       </ion-item>
-    </section>
-  </ion-list>
+  </section>
+
 </ion-content>

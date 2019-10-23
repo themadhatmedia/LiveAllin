@@ -1,35 +1,4 @@
-<!-- <ion-header>
-<ion-toolbar color="primary">
-    <ion-title>
-      Library
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <ion-list>
-
-    <section *ngIf="songsToDownload.length > 0">
-      <ion-item-divider>
-        <ion-label>
-          Available to Download
-        </ion-label>
-      </ion-item-divider>
-      <ion-item *ngFor="let playlist of songsToDownload; let index = index" (click)="downloadSong(song, index)">
-        <ion-label>{{ playlist.song.title }}</ion-label>
-        <div class="get">Get</div>
-      </ion-item>
-    </section>
-  </ion-list>
-</ion-content>
- -->
-
- 
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/css/ionic.bundle.css" />
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/dist/ionic/ionic.esm.js"></script>
-  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/dist/ionic/ionic.js"></script> -->
-
-  <ion-app>
+ <ion-app>
 
     <ion-header translucent>
       <ion-toolbar>
@@ -42,9 +11,8 @@
 
 
     <ion-content fullscreen>
-      <ion-list>        
-          <!-- <ion-reorder-group id="reorder" (ionItemReorder)="reorderItems($event)">           -->
-          <ion-reorder-group id="reorder" (ionItemReorder)="reorderItems($event);">          
+      <!-- <ion-list>        
+          <ion-reorder-group id="reorder" (ionItemReorder)="reorderItems($event);"  disabled="false"  >          
               <ion-item *ngFor="let playlist of songsToDownload; let index = index">
                 <ion-icon name="play"></ion-icon>
                 <ion-label>
@@ -53,7 +21,33 @@
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
           </ion-reorder-group>
+      </ion-list> -->
+
+      <ion-list>
+        <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="false">
+     
+          <ion-item *ngFor="let playlist of songsToDownload" >
+            <ion-icon name="play" (click)="playAudio(playlist.song.audioUrl)"></ion-icon>
+            <ion-icon name="pause" (click)="stopAudio(playlist.song.audioUrl)"></ion-icon>
+
+            
+
+            
+
+            <ion-label>
+              {{ playlist.song.title }}
+            </ion-label>
+            <ion-reorder></ion-reorder>
+          </ion-item>
+     
+        </ion-reorder-group>
       </ion-list>
+      <ion-list text-center>
+        <ion-button (click)="getList()">
+          Get Updated List
+        </ion-button>
+      </ion-list>
+      
     </ion-content>
     
   </ion-app>

@@ -21,9 +21,6 @@ export class RouteGuardService implements CanActivate {
       } else {
         this.auth.getUser(user).subscribe(doc => {
           const dbUser = doc.data();
-          console.log('================');
-          console.log(user.email);
-          console.log('================');
           this.auth.setUser(dbUser);
         }, error => console.error(JSON.stringify(error)));
         return true;

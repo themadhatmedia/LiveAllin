@@ -40,8 +40,8 @@ export class LibraryPage implements OnInit {
   }
 
   savePlaylust(song: Song, index: number): void {
-    
-    this.songService.savePlaylistmodal(song);
+    var userEmail = this.auth.user.email;
+    this.songService.savePlaylistmodal(song,userEmail);
   }
 
   downloadSong(song: Song, index: number): void {
