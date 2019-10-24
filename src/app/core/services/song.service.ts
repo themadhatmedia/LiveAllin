@@ -11,7 +11,7 @@ import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-nati
 @Injectable({ providedIn: 'root' })
 
 export class SongService {
-
+  collectionRef:any;
   song: Blob;
   meta: Observable<any>;
 
@@ -37,19 +37,44 @@ export class SongService {
   }
 
   savePlaylistmodal(song: Song, userEmail) {
-    console.log(userEmail);
-    
-      
+      console.log(userEmail);        
+     
+      console.log('add to playlist now');   
+      console.log('Save = '+userEmail);   
       this.db.collection("playlist").add({ 
         userEmail:userEmail,
         userId:"1",
         song:song,
-        timestamp:Date.now()
+        sortBy:0
       }).then((data)=>{ 
         //console(data); 
       }).catch((err)=>{ 
         //console.log(err); 
       })
+  }
+
+  savePlaylistmodalOrder(Reorderlist, userEmail) {
+
+      console.log(userEmail);
+      console.log('===================================================');      
+      console.log(Reorderlist);   
+      var dbthis = this.db;           
+
+      Reorderlist.forEach(function(val, key) {
+
+          dbthis.collection("playlist").add({ 
+            userEmail:userEmail,
+            userId:"1",
+            song:val.song,
+            sortBy:key
+          }).then((data)=>{ 
+            //console(data); 
+          }).catch((err)=>{ 
+            //console.log(err); 
+          });
+
+      })
+     
   }
 
   downloadSongAudio(song: Song): Promise<any> {

@@ -9,13 +9,14 @@ import { Playlist } from '../models/song.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
+import { AuthService } from '../../core/services/auth.service';
 import { User } from '../models/user.model';
 
 
 @Injectable({ providedIn: 'root' })
 
 export class PlaylistService {
-
+  userEmail:any;
   song: Blob;
   meta: Observable<any>;
 
@@ -23,6 +24,7 @@ export class PlaylistService {
   playlistCollection: AngularFirestoreCollection<Playlist>;
 
   constructor(
+    public auth: AuthService,
     private file: File,
     private helper: HelperService,
     private transfer: FileTransfer,
@@ -35,13 +37,18 @@ export class PlaylistService {
 
   private init(): void {
     this.songsCollection = this.db.collection<Song>('songs');
-    var userEmail = window.localStorage.getItem('userEmail');
+
+    var userEmail = this.auth.user.email;
+    if(userEmail == ''){
+      var userEmail = window.localStorage.getItem('userEmail');
+    }
+
     /*this.playlistCollection = this.db.collection<Playlist>('playlist',
       ref => ref.where('userEmail', '==', userEmail),
       ref => ref.orderByChild('timestamp'));*/
 
     this.playlistCollection = this.db.collection<Playlist>('playlist',
-      ref => ref.where('userEmail', '==', userEmail));
+      ref => ref.where('userEmail', '==', userEmail).orderBy('sortBy', 'asc'));
 
 
   }
@@ -73,7 +80,8 @@ export class PlaylistService {
       
       
       var userEmail = window.localStorage.getItem('userEmail');
-      
+      console.log('--------------------------------');
+      console.log(userEmail);
       this.db.collection("playlist").add({ 
         userEmail:userEmail,
         userId:"1",
