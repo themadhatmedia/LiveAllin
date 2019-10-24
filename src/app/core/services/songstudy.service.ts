@@ -41,7 +41,7 @@ export class SongStudyService {
         userEmail:userEmail,
         answer:answer
       }).then((data)=>{
-        console(data);
+        console.log(data);
       }).catch((err)=>{
         console.log(err);
       })
