@@ -4,7 +4,7 @@ import { AuthService } from './../core/services/auth.service';
 import { Router } from '@angular/router';
 
 
-
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { SongType } from './../core/models/song.model';
 import { Component, OnInit } from '@angular/core';
 import { SongService } from '../core/services/song.service';
@@ -22,6 +22,10 @@ import { MusicPlayerComponent } from '../core/components/music-player/music-play
 
 export class PlaylistPage {
 
+  listItems: any;
+  playlist: any;
+  reorder_songs: any;
+
   audio: any;
   showToggle:boolean = true;
 
@@ -29,7 +33,7 @@ export class PlaylistPage {
   allSongs: Song[] = [];
   songsToDownload: Song[] = [];
   SubscriptionType = SubscriptionType;
-  listItems: any;
+  
   items: any;
   btnName: any = 'edit';
   flag: any = false;
@@ -39,8 +43,30 @@ export class PlaylistPage {
     private router: Router,
     private nativeStorage: NativeStorage,
     public songService: SongService,
-    public playlistService: PlaylistService
+    public playlistService: PlaylistService,
+    private db: AngularFirestore,
   ) {
+
+    /*this.listItems = [
+      "1. Aylin Roberts",
+      "2. Autumn Kuhic",
+      "3. Tiffany Windler",
+      "4. Sheila Bauch",
+      "5. Diana Gerhold",
+      "6. Arielle Kuhn"
+    ];*/
+
+    //var userEmail = this.auth.user.email;
+    /*this.listItems = this.db.collection('playlist',
+      ref => ref.where('userEmail', '==', userEmail).orderBy('sortBy', 'asc')).get();*/
+    this.playlist = this.db.collection('playlist');
+    const pl = this.db.collection('playlist');
+      
+    this.playlistService.getPlaylistSongs().subscribe(apiSongs => {           
+      this.listItems = apiSongs;      
+    });
+
+
   }
 
   ngOnInit() {
@@ -51,6 +77,35 @@ export class PlaylistPage {
     this.audio = new Audio();
     this.audio.src = 'https://firebasestorage.googleapis.com/v0/b/live-all-in-17081.appspot.com/o/audio%2Fat%20the%20same%20time.mp3?alt=media&token=6c7593d1-9bad-4dee-8e37-dbe5595425be';
     this.audio.load();
+
+  }
+
+  onRenderItems(event) {
+    console.log(event);
+    console.log(`Moving item from ${event.detail.from} to ${event.detail.to}`);
+    let draggedItem = this.listItems.splice(event.detail.from,1)[0];
+    this.listItems.splice(event.detail.to,0,draggedItem)
+    //this.listItems = reorderArray(this.listItems, event.detail.from, event.detail.to);
+    event.detail.complete();
+  }
+ 
+  getList() {
+
+    let myReorderData = this.listItems;
+    var userEmail = this.auth.user.email;
+    // first delete old playlist
+    const deletlist = this.db.collection('playlist', ref => ref.where('userEmail', '==', userEmail))
+    deletlist.get().subscribe(delitems => delitems.forEach( doc=> doc.ref.delete()));
+
+    // Reorder  playlist
+     if(userEmail == ''){
+        var userEmail = window.localStorage.getItem('userEmail');
+      } 
+    setTimeout( () => {       
+        this.songService.savePlaylistmodalOrder(myReorderData,userEmail);
+    }, 1000);
+
+    
 
   }
 
@@ -86,14 +141,6 @@ export class PlaylistPage {
       });
       
   }*/
-
-  onRenderItems(event) {
-    console.log('Moving item from ${event.detail.from} to ${event.detail.to}');
-    //let draggedItem = this.listItems.splice(event.detail.from,1)[0];
-    /*this.listItems.splice(event.detail.to,0,draggedItem)
-    this.listItems = reorderArray(this.listItems, event.detail.from, event.detail.to);*/
-    event.detail.complete();
-  }
 
   getSongsFromDB(): void {
     this.nativeStorage.getItem('playlist').then(dbSongs => {
