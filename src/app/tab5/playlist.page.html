@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-title>My Playlist</ion-title>
         <ion-buttons slot="primary">
-          <ion-button (click)="toggleReorder()">Edit</ion-button>
+          <!-- <ion-button (click)="toggleReorder()">Edit</ion-button> -->
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -26,14 +26,10 @@
       <ion-list>
         <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="false">
      
-          <ion-item *ngFor="let playlist of songsToDownload" >
-            <ion-icon name="play" (click)="playAudio(playlist.song.audioUrl)"></ion-icon>
-            <ion-icon name="pause" (click)="stopAudio(playlist.song.audioUrl)"></ion-icon>
-
-            
-
-            
-
+          <ion-item *ngFor="let playlist of songsToDownload" (click)="onClickDetails(playlist)" >
+            <ion-icon name="musical-notes" style="margin-right:5px; "></ion-icon>
+            <!-- <ion-icon name="play" (click)="playAudio(playlist.song.audioUrl)"></ion-icon>
+            <ion-icon name="pause" (click)="stopAudio(playlist.song.audioUrl)"></ion-icon> -->
             <ion-label>
               {{ playlist.song.title }}
             </ion-label>
