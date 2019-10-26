@@ -1,7 +1,7 @@
 import { HelperService } from './../core/services/helper.service';
 import { SubscriptionType } from './../core/models/user.model';
 import { AuthService } from './../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router,NavigationExtras } from '@angular/router';
 
 
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
@@ -46,7 +46,7 @@ export class PlaylistPage {
     public playlistService: PlaylistService,
     private db: AngularFirestore,
   ) {
-
+    
     /*this.listItems = [
       "1. Aylin Roberts",
       "2. Autumn Kuhic",
@@ -103,7 +103,7 @@ export class PlaylistPage {
       } 
     setTimeout( () => {       
         this.songService.savePlaylistmodalOrder(myReorderData,userEmail);
-    }, 1000);
+    }, 2200);
 
     
 
@@ -166,5 +166,18 @@ export class PlaylistPage {
   filterSongsByReleaseDate(songs: Song[]): void {      
     this.songsToDownload = songs;    
   }
+
+   onClickDetails(item){
+
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(item)
+        }
+      };
+      this.router.navigate(['home'], navigationExtras);
+
+      /*console.log(item);
+      this.router.navigate(['home',{item:item}])*/
+    }
   
 }

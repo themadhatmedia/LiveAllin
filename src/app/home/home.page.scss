@@ -1,0 +1,47 @@
+.avatar {
+  display: block;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-image: url('https://s-media-cache-ak0.pinimg.com/originals/82/8d/9c/828d9ce86050123bd1ec659604fab945.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+
+  margin: 0 auto;
+  border: 2px solid #f1f1f1;
+  box-shadow: 0 0 5px #999;
+}
+
+.play-pause-btn {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 0 10px #999;
+  font-size: 2.3em;
+  border-radius: 50%;
+}
+
+.skip-btn {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 0 10px #999;
+}
+
+
+
+.getstart{
+    --background: rgba(245, 216, 197,1);
+    --background: -moz-linear-gradient(45deg, rgba(245, 216, 197,1) 0%, rgba(113, 171, 164,1) 100%);
+    --background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(245, 216, 197,1)), color-stop(100%, rgba(113, 171, 164,1)));
+    --background: -webkit-linear-gradient(45deg, rgba(245, 216, 197,1) 0%, rgba(113, 171, 164,1) 100%);
+    --background: -o-linear-gradient(45deg, rgba(245, 216, 197,1) 0%, rgba(113, 171, 164,1) 100%);
+    --background: -ms-linear-gradient(45deg, rgba(245, 216, 197,1) 0%, rgba(113, 171, 164,1) 100%);
+    --background: linear-gradient(45deg, rgba(245, 216, 197,1) 0%, rgba(113, 171, 164,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
+ 
+    --color:#ffffff;
+}
