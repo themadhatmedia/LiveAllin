@@ -49,48 +49,44 @@ export class PlaylistService {
 
     this.playlistCollection = this.db.collection<Playlist>('playlist',
       ref => ref.where('userEmail', '==', userEmail).orderBy('sortBy', 'asc'));
-
-
   }
 
-  
   getSongs(): Observable<Song[]> {
     return this.songsCollection.valueChanges();
   }
 
   getPlaylistSongs(): Observable<Song[]> {
-
     return this.playlistCollection.valueChanges();
   }
 
   /*updatePlaylistOrder(index: index) {
-      
+
       console.log(index);
-      this.db.collection("playlist").doc(index).update({         
+      this.db.collection("playlist").doc(index).update({
         timestamp:Date.now()
-      }).then((data)=>{ 
-        console(data); 
-      }).catch((err)=>{ 
-        console.log(err); 
+      }).then((data)=>{
+        console(data);
+      }).catch((err)=>{
+        console.log(err);
       })
   }*/
 
 
   savePlaylistmodal(song: Song) {
-      
-      
       var userEmail = window.localStorage.getItem('userEmail');
+
       console.log('--------------------------------');
       console.log(userEmail);
-      this.db.collection("playlist").add({ 
+      
+      this.db.collection("playlist").add({
         userEmail:userEmail,
         userId:"1",
         song:song,
         timestamp:Date.now()
-      }).then((data)=>{ 
-       // console(data); 
-      }).catch((err)=>{ 
-       // console.log(err); 
+      }).then((data)=>{
+       // console(data);
+      }).catch((err)=>{
+       // console.log(err);
       })
   }
 

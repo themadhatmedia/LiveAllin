@@ -28,19 +28,14 @@ export class Tab1Page implements OnInit {
   }
 
   getQuotesFromFirebase(): void {
-    console.log('get quotes');
     const quoteSub = this.quoteService.getAllQuotes().subscribe(apiQuotes => {
-      console.log(apiQuotes);
-
       quoteSub.unsubscribe();
     });
   }
 
   getCurrentQuotesFromFirebase(): void {
-    console.log('get current quotes');
+
     const quoteSub = this.quoteService.getQuoteFromDB(this.currentDate).subscribe(apiQuotes => {
-      console.log(apiQuotes);
-      console.log(this.currentDate);
 
       if (apiQuotes.length < 1) {
         this.quote.Author = "I will praise the name of God with a song.";
@@ -62,32 +57,34 @@ export class Tab1Page implements OnInit {
   }
 
   getSongStudyQuestions(): void {
-    console.log('get qustions');
     const songStudySub = this.songStudyService.getAllSongStudy().subscribe(apiSongStudy => {
-      console.log(apiSongStudy);
-
       songStudySub.unsubscribe();
     });
   }
 
   getCurrentSongStudyQuestion(): void {
-    console.log('get current questions');
-    const songStudySub = this.songStudyService.getSpecificSongStudy(this.currentDate).subscribe(apiSongStudy => {
-      console.log(apiSongStudy);
-      console.log(this.currentDate);
+    var dt = new Date();
+    var mm = dt.getMonth() + 1;
+    var dd = "01";
+    var yyyy = dt.getFullYear();
+    var firstDate = mm + '/' + dd + '/' + yyyy
+
+    var userEmail = window.localStorage.getItem('userEmail');
+    const songStudySub = this.songStudyService.getSpecificSongStudy(firstDate).subscribe(apiSongStudy => {
 
       apiSongStudy.forEach(res => {
-        console.log(res.question);
-        console.log(res.date);
-
-        this.presentAlertPrompt(res.question);
+        const isAnswered = this.songStudyService.getUserIsAnswered(res.id, userEmail).subscribe(song=> {
+          if(song.length == 0) {
+            this.presentAlertPrompt(res.question, res.id);
+          }
+        });
       });
 
       songStudySub.unsubscribe();
     });
   }
 
-  async presentAlertPrompt(question: string) {
+  async presentAlertPrompt(question: string, id: string) {
       const alert = await this.alertController.create({
         header: 'Song Study',
         message: question,
@@ -104,19 +101,16 @@ export class Tab1Page implements OnInit {
             role: 'cancel',
             cssClass: 'secondary',
             handler: () => {
-              console.log('Confirm Cancel');
+
             }
           }, {
             text: 'Submit',
             handler: data => {
-              console.log(data.answer);
-
-              const songStudyAns = this.songStudyService.addSongStudyAnswer(data.answer);
+              const songStudyAns = this.songStudyService.addSongStudyAnswer(id, question,data.answer);
             }
           }
         ]
       });
-
       await alert.present();
     }
 }

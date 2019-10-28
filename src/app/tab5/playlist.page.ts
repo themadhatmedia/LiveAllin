@@ -3,7 +3,6 @@ import { SubscriptionType } from './../core/models/user.model';
 import { AuthService } from './../core/services/auth.service';
 import { Router,NavigationExtras } from '@angular/router';
 
-
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { SongType } from './../core/models/song.model';
 import { Component, OnInit } from '@angular/core';
@@ -12,7 +11,7 @@ import { PlaylistService } from '../core/services/playlist.service';
 import { Song } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
-import { MusicPlayerComponent } from '../core/components/music-player/music-player.component'; 
+import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
 
 @Component({
   selector: 'app-tab5',
@@ -29,11 +28,11 @@ export class PlaylistPage {
   audio: any;
   showToggle:boolean = true;
 
-  
+
   allSongs: Song[] = [];
   songsToDownload: Song[] = [];
   SubscriptionType = SubscriptionType;
-  
+
   items: any;
   btnName: any = 'edit';
   flag: any = false;
@@ -46,7 +45,7 @@ export class PlaylistPage {
     public playlistService: PlaylistService,
     private db: AngularFirestore,
   ) {
-    
+
     /*this.listItems = [
       "1. Aylin Roberts",
       "2. Autumn Kuhic",
@@ -61,9 +60,9 @@ export class PlaylistPage {
       ref => ref.where('userEmail', '==', userEmail).orderBy('sortBy', 'asc')).get();*/
     this.playlist = this.db.collection('playlist');
     const pl = this.db.collection('playlist');
-      
-    this.playlistService.getPlaylistSongs().subscribe(apiSongs => {           
-      this.listItems = apiSongs;      
+
+    this.playlistService.getPlaylistSongs().subscribe(apiSongs => {
+      this.listItems = apiSongs;
     });
 
 
@@ -88,7 +87,7 @@ export class PlaylistPage {
     //this.listItems = reorderArray(this.listItems, event.detail.from, event.detail.to);
     event.detail.complete();
   }
- 
+
   getList() {
 
     let myReorderData = this.listItems;
@@ -100,12 +99,12 @@ export class PlaylistPage {
     // Reorder  playlist
      if(userEmail == ''){
         var userEmail = window.localStorage.getItem('userEmail');
-      } 
-    setTimeout( () => {       
+      }
+    setTimeout( () => {
         this.songService.savePlaylistmodalOrder(myReorderData,userEmail);
     }, 2200);
 
-    
+
 
   }
 
@@ -120,7 +119,7 @@ export class PlaylistPage {
   }
 
   stopAudio():void {
-    this.audio.pause(); 
+    this.audio.pause();
   }
 
 
@@ -130,21 +129,21 @@ export class PlaylistPage {
       this.audio.pause();
       this.audio = null;
     }*/
-  
+
 
   /*toggleReorder(): void {
-  
-      const reorderGroup = document.getElementById('reorder');      
+
+      const reorderGroup = document.getElementById('reorder');
       reorderGroup.disabled = !reorderGroup.disabled;
       reorderGroup.addEventListener('ionItemReorder', ({detail}) => {
         detail.complete(true);
       });
-      
+
   }*/
 
   getSongsFromDB(): void {
     this.nativeStorage.getItem('playlist').then(dbSongs => {
-      
+
       console.log(dbSongs);
       this.allSongs = dbSongs;
       this.getSongsFromFirebase();
@@ -156,15 +155,15 @@ export class PlaylistPage {
   getSongsFromFirebase(): void {
     console.log('get playlist songs');
     const songSub = this.playlistService.getPlaylistSongs().subscribe(apiSongs => {
-      console.log(apiSongs);      
+      console.log(apiSongs);
       console.log('all songs playlist');
       console.log(this.allSongs);
-      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs      
+      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
     });
   }
 
-  filterSongsByReleaseDate(songs: Song[]): void {      
-    this.songsToDownload = songs;    
+  filterSongsByReleaseDate(songs: Song[]): void {
+    this.songsToDownload = songs;
   }
 
    onClickDetails(item){
@@ -179,5 +178,5 @@ export class PlaylistPage {
       /*console.log(item);
       this.router.navigate(['home',{item:item}])*/
     }
-  
+
 }

@@ -34,16 +34,26 @@ export class SongStudyService {
     return quoteQuery;
   }
 
-  addSongStudyAnswer(answer: String) {
+  getUserIsAnswered(songId: string, userEmail: string): Observable<any>  {
+    const songStudyProc = this.db.collection("songStudy")
+    .doc(songId)
+    .collection("answers", ref => ref.where('userEmail', '==', userEmail))
+    .valueChanges();
+    return songStudyProc;
+  }
+
+  addSongStudyAnswer(id: string, question: string, answer: string) {
       var userEmail = window.localStorage.getItem('userEmail');
 
-      this.db.collection("songStudyAnswer").add({
-        userEmail:userEmail,
+      this.db.collection("songStudy")
+      .doc(id)
+      .collection("answers").add({
+        userEmail: userEmail,
         answer:answer
       }).then((data)=>{
-        console.log(data);
+        //console.log(data);
       }).catch((err)=>{
-        console.log(err);
+        //console.log(err);
       })
-  }
+    }
 }

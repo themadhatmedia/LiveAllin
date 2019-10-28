@@ -37,50 +37,49 @@ export class SongService {
   }
 
   savePlaylistmodal(song: Song, userEmail) {
-      console.log(userEmail);        
-     
-      console.log('add to playlist now');   
-      console.log('Save = '+userEmail);   
-      this.db.collection("playlist").add({ 
+      console.log(userEmail);
+      console.log('add to playlist now');
+      console.log('Save = ' + userEmail);
+
+      this.db.collection("playlist").add({
         userEmail:userEmail,
         userId:"1",
         song:song,
         sortBy:0
-      }).then((data)=>{ 
-        //console(data); 
-      }).catch((err)=>{ 
-        //console.log(err); 
+      }).then((data)=>{
+        //console(data);
+      }).catch((err)=>{
+        //console.log(err);
       })
   }
 
   savePlaylistmodalOrder(Reorderlist, userEmail) {
-
       console.log(userEmail);
-      console.log('===================================================');      
-      console.log(Reorderlist);   
-      var dbthis = this.db;           
+      console.log('===================================================');
+      console.log(Reorderlist);
+
+      var dbthis = this.db;
 
       Reorderlist.forEach(function(val, key) {
-
-          dbthis.collection("playlist").add({ 
+          dbthis.collection("playlist").add({
             userEmail:userEmail,
             userId:"1",
             song:val.song,
             sortBy:key
-          }).then((data)=>{ 
-            //console(data); 
-          }).catch((err)=>{ 
-            //console.log(err); 
+          }).then((data)=>{
+            //console(data);
+          }).catch((err)=>{
+            //console.log(err);
           });
-
       })
-     
   }
 
   downloadSongAudio(song: Song): Promise<any> {
     let fileName = song.title.replace(/[^A-Za-z]/g, '');
     fileName += '.mp3';
+
     console.log(fileName);
+
     const fileTransfer: FileTransferObject = this.transfer.create();
     // const url = `https://firebasestorage.googleapis.com/v0/b/live-all-in-test.appspot.com/o/audio%2FBe%20Where%20You%20Are.mp3?alt=media&token=819e99ea-0a22-4d56-9f05-c51257d53fae`;
     // this.soundPath = entry.toURL();
@@ -90,7 +89,9 @@ export class SongService {
   downloadSongImage(song: Song): Promise<any> {
     let fileName = song.title.replace(/[^A-Za-z]/g, '');
     fileName += '.svg';
+
     console.log(fileName);
+
     const fileTransfer: FileTransferObject = this.transfer.create();
     // const url = `https://firebasestorage.googleapis.com/v0/b/live-all-in-test.appspot.com/o/audio%2FBe%20Where%20You%20Are.mp3?alt=media&token=819e99ea-0a22-4d56-9f05-c51257d53fae`;
     // this.soundPath = entry.toURL();
@@ -148,8 +149,6 @@ export class SongService {
     //         });
     //     });
     // });
-
-
 
       // const reader = new FileReader();
       // reader.onloadend = (event) => {

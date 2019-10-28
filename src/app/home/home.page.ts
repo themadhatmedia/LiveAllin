@@ -21,8 +21,9 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['home.page.scss'],
   providers:[DatePipe]
 })
+
 export class HomePage implements OnInit {
-  
+
   data: any;
   songsImage: any;
   title = 'Live All In';
@@ -51,7 +52,7 @@ export class HomePage implements OnInit {
     private transfer: FileTransfer,
     private media: Media,
     private datePipe: DatePipe,
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router
 
   ) {

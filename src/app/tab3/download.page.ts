@@ -7,6 +7,7 @@ import { Song } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
 import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+import { Router,NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
@@ -31,13 +32,27 @@ export class DownloadPage implements OnInit {
     private helper: HelperService,
     private modalCtrl: ModalController,
     private nativeStorage: NativeStorage,
-    public songService: SongService
+    public songService: SongService,
+    private router: Router,
     ) {
   }
 
   ngOnInit() {
     this.getSongsFromDB();
   }
+
+  onClickDetails(item){
+
+     let navigationExtras: NavigationExtras = {
+       queryParams: {
+         special: JSON.stringify(item)
+       }
+     };
+     this.router.navigate(['home'], navigationExtras);
+
+     /*console.log(item);
+     this.router.navigate(['home',{item:item}])*/
+   }
 
   downloadSong(song: Song, index: number): void {
     this.helper.presentLoading('Downloading Song');

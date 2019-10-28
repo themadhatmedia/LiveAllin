@@ -11,8 +11,8 @@
 
 
     <ion-content fullscreen>
-      <!-- <ion-list>        
-          <ion-reorder-group id="reorder" (ionItemReorder)="reorderItems($event);"  disabled="false"  >          
+      <!-- <ion-list>
+          <ion-reorder-group id="reorder" (ionItemReorder)="reorderItems($event);"  disabled="false"  >
               <ion-item *ngFor="let playlist of songsToDownload; let index = index">
                 <ion-icon name="play"></ion-icon>
                 <ion-label>
@@ -25,7 +25,7 @@
 
       <ion-list>
         <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="false">
-     
+
           <ion-item *ngFor="let playlist of songsToDownload" (click)="onClickDetails(playlist)" >
             <ion-icon name="musical-notes" style="margin-right:5px; "></ion-icon>
             <!-- <ion-icon name="play" (click)="playAudio(playlist.song.audioUrl)"></ion-icon>
@@ -35,7 +35,7 @@
             </ion-label>
             <ion-reorder></ion-reorder>
           </ion-item>
-     
+
         </ion-reorder-group>
       </ion-list>
       <ion-list text-center>
@@ -43,7 +43,5 @@
           Updated Reoder
         </ion-button>
       </ion-list>
-      
     </ion-content>
-    
   </ion-app>
