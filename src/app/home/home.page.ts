@@ -39,11 +39,14 @@ export class HomePage implements OnInit {
   curr_playing_file: MediaObject;
   storageDirectory: any;
 
-  is_playing: boolean = true;
+  is_playing: boolean = false;
   is_in_play: boolean = false;
   is_ready: boolean = false;
   isLastPlaying: boolean = true;
   isFirstPlaying: boolean = true;
+
+  isRepeat: boolean = false;
+  isShuffle: boolean = false;
 
   message: any;
 
@@ -98,8 +101,11 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+
+
      var allSongs = this.all;     
      var current_index = this.current_index;
+     
 
 
      var songsDetail = this.data;
@@ -122,6 +128,15 @@ export class HomePage implements OnInit {
       }else{
         this.isLastPlaying =  true;
       }
+
+      
+      /*setTimeout(function(){          
+          document.getElementById('stopbtn').click();          
+      }, 1000);*/
+      /*setTimeout(function(){          
+          document.getElementById('playbtn').click();          
+      }, 3000);*/
+
 
   }
 
@@ -262,6 +277,17 @@ export class HomePage implements OnInit {
         default:
           this.is_in_play = false;
           this.is_playing = false;
+          if(this.isRepeat){
+            this.playRecording();
+          }else if(this.isShuffle){            
+            var myindex = this.randomNumber(0, this.all.length);
+            this.onNextSongs(this.all,myindex);
+
+          }else{
+            this.onNextSongs(this.all,this.current_index);
+            
+          }
+
           break;
       }
     });
@@ -272,7 +298,7 @@ export class HomePage implements OnInit {
   }
 
   playRecording() {
-    
+        
     this.curr_playing_file.play();
     this.toastCtrl
       .create({
@@ -349,88 +375,114 @@ export class HomePage implements OnInit {
   }
 
 
-    onNextSongs(item,index){
-      this.stopPlayRecording();
-      console.log('Curent Index = ' + index);
-      const current_songs = item[index];
-      const index_next = parseInt(index + 1);      
-      const next_songs = item[index_next];
-      
-      var title_s = next_songs.song.title;
-      var audioUrl_s = next_songs.song.audioUrl;
-      this.title = title_s;      
-      this.songsImage = next_songs.song.imageUrl;      
-      this.audioUrl = audioUrl_s;
+  onNextSongs(item,index){
+    this.stopPlayRecording();
+    console.log('Curent Index = ' + index);
+    const current_songs = item[index];
+    const index_next = parseInt(index + 1);      
+    const next_songs = item[index_next];
+    
+    var title_s = next_songs.song.title;
+    var audioUrl_s = next_songs.song.audioUrl;
+    this.title = title_s;      
+    this.songsImage = next_songs.song.imageUrl;      
+    this.audioUrl = audioUrl_s;
 
 
-      if( index_next === item.length - 1){
-        this.isLastPlaying =  false;
-      }else{
-        this.isLastPlaying =  true;
-      }
-
-      if( index_next === 0){
-        this.isFirstPlaying =  false;
-      }else{
-        this.isFirstPlaying =  true;
-      }
-
-      this.current_index = index_next;
-
-      console.log('=================Next Is Disable ==============');
-      console.log(index);
-      console.log(item.length);
-
-      console.log(this.isLastPlaying);
-      
-      this.prepareAudioFile(audioUrl_s,title_s);
-      
-
+    if( index_next === item.length - 1){
+      this.isLastPlaying =  false;
+    }else{
+      this.isLastPlaying =  true;
     }
 
-    onPrevSongs(item,index){
-
-      this.stopPlayRecording();
-      console.log('Curent Index = ' + index);
-      const current_songs = item[index];
-      const index_next = index - 1;      
-      const prev_songs = item[index_next];
-      
-      var title_s = prev_songs.song.title;
-      var audioUrl_s = prev_songs.song.audioUrl;
-      this.title = title_s;      
-      this.songsImage = prev_songs.song.imageUrl;      
-      this.audioUrl = audioUrl_s;
-
-
-      if( index_next === item.length - 1){
-        this.isLastPlaying =  false;
-      }else{
-        this.isLastPlaying =  true;
-      }
-
-      if( index_next === 0){
-        this.isFirstPlaying =  false;
-      }else{
-        this.isFirstPlaying =  true;
-      }
-
-      this.current_index = index_next;
-
-      console.log('=================Prev Is Disable ==============');
-      console.log(index);
-      console.log(item.length);
-
-      console.log(this.isFirstPlaying);
-
-      
-      this.prepareAudioFile(audioUrl_s,title_s);
-      
-
-      
-
+    if( index_next === 0){
+      this.isFirstPlaying =  false;
+    }else{
+      this.isFirstPlaying =  true;
     }
 
+    this.current_index = index_next;
 
+    console.log('=================Next Is Disable ==============');
+    console.log(index);
+    console.log(item.length);
+    console.log(this.isLastPlaying);    
+    this.prepareAudioFile(audioUrl_s,title_s);
+
+
+  }
+
+  onPrevSongs(item,index){
+
+    this.stopPlayRecording();
+    console.log('Curent Index = ' + index);
+    const current_songs = item[index];
+    const index_next = index - 1;      
+    const prev_songs = item[index_next];
+    
+    var title_s = prev_songs.song.title;
+    var audioUrl_s = prev_songs.song.audioUrl;
+    this.title = title_s;      
+    this.songsImage = prev_songs.song.imageUrl;      
+    this.audioUrl = audioUrl_s;
+
+
+    if( index_next === item.length - 1){
+      this.isLastPlaying =  false;
+    }else{
+      this.isLastPlaying =  true;
+    }
+
+    if( index_next === 0){
+      this.isFirstPlaying =  false;
+    }else{
+      this.isFirstPlaying =  true;
+    }
+
+    this.current_index = index_next;
+
+    console.log('=================Prev Is Disable ==============');
+    console.log(index);
+    console.log(item.length);
+    console.log(this.isFirstPlaying);
+    
+    this.prepareAudioFile(audioUrl_s,title_s);
+
+  }
+
+  onIsRepeat(){
+    
+    if(this.isRepeat){
+      this.isRepeat = false;
+    }else{
+      this.isRepeat = true;
+    }
+    console.log('isRepeat');
+    console.log(this.isRepeat);
+  }
+
+  onIsShuffle(){
+    
+    if(this.isShuffle){
+      this.isShuffle = false;
+    }else{
+      this.isShuffle = true;
+    }
+    console.log('isShuffle');
+    console.log(this.isShuffle);
+  }
+
+  toggleClass(item){
+    item = !item;
+  }
+  toggleShuffle(item){
+    item = !item;
+  }
+
+  randomNumber(min, max) {  
+      min = Math.ceil(min); 
+      max = Math.floor(max); 
+      return Math.floor(Math.random() * (max - min + 1)) + min; 
+  } 
 
 }

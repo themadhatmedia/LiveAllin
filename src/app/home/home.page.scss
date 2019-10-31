@@ -31,6 +31,15 @@
   box-shadow: 0 0 10px #999;
 }
 
+.my-round-btn {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  box-shadow: 0 0 10px #999;
+}
+
 
 
 .getstart{
@@ -44,4 +53,8 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
  
     --color:#ffffff;
+}
+.isDisable { 
+  --opacity: 0.5;
+  color: #999;
 }

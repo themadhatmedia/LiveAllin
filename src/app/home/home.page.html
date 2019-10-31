@@ -23,9 +23,25 @@
         <ion-label slot="end" *ngIf="duration != -1">{{ duration*1000 | date:'mm:ss' }}</ion-label>
       </ion-range>
     </div>
-    <br>
 
+
+    <!-- <ion-fab-button class="play-pause-btn" id="stopbtn" (click)="stopPlayRecording()" color="secondary" >
+            <ion-icon name="stop"></ion-icon>
+    </ion-fab-button> -->
+    
     <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-start">
+            <ion-icon name="shuffle" (click)="onIsShuffle(); toggleShuffle(isShuffle)" [ngClass]="{'isDisable': !isShuffle}"></ion-icon>            
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="ion-text-end" >
+            <ion-icon name="repeat" (click)="onIsRepeat(); toggleClass(isRepeat)" [ngClass]="{'isDisable': !isRepeat}"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
       <ion-row class="ion-align-items-center ion-justify-content-center" style="height: 100%">
         <ion-col>
           <!-- Backwards -->
@@ -35,7 +51,7 @@
         </ion-col>
         <ion-col>
           <!-- Play/Pause -->
-          <ion-fab-button class="play-pause-btn" (click)="playRecording()" color="secondary" *ngIf="!is_playing"
+          <ion-fab-button class="play-pause-btn" id="playbtn" (click)="playRecording()" color="secondary" *ngIf="!is_playing"
             [disabled]="!is_ready">
             <ion-icon name="play"></ion-icon>
           </ion-fab-button>
