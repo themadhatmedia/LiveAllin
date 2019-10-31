@@ -18,7 +18,7 @@
     <div>
       <ion-range min="0" max="{{duration}}" [(ngModel)]="position">
         <!--  [disabled]="is_in_play && is_playing"  -->
-        <ion-label slot="start">{{ position*1000 | date:'mm:ss' }}</ion-label>
+        <ion-label slot="start">{{ position*1000 | date:'mm:ss' }} </ion-label>
         <ion-label slot="end" *ngIf="duration == -1">--:--</ion-label>
         <ion-label slot="end" *ngIf="duration != -1">{{ duration*1000 | date:'mm:ss' }}</ion-label>
       </ion-range>
@@ -29,8 +29,7 @@
       <ion-row class="ion-align-items-center ion-justify-content-center" style="height: 100%">
         <ion-col>
           <!-- Backwards -->
-          <ion-fab-button class="skip-btn" color="danger" [disabled]="!is_ready || !is_in_play"
-            (click)="controlSeconds('back')">
+          <ion-fab-button class="skip-btn" color="danger" [disabled]="!isFirstPlaying" (click)="onPrevSongs(allSongs,current_index)">
             &nbsp;&nbsp;<ion-icon name="skip-backward"></ion-icon>&nbsp;&nbsp;
           </ion-fab-button>
         </ion-col>
@@ -48,8 +47,7 @@
         </ion-col>
         <ion-col>
           <!-- Forwards -->
-          <ion-fab-button class="skip-btn" color="danger" [disabled]="!is_ready || !is_in_play"
-            (click)="controlSeconds('forward')">
+          <ion-fab-button class="skip-btn" color="danger" [disabled]="!isLastPlaying" (click)="onNextSongs(allSongs,current_index)">
             &nbsp;&nbsp;<ion-icon name="skip-forward"></ion-icon>&nbsp;&nbsp;
           </ion-fab-button>
         </ion-col>

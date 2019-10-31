@@ -13,7 +13,7 @@ import {
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +25,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class HomePage implements OnInit {
 
   data: any;
+  next: any;
+  prev: any;
+  all: any;
+  allSongs: any;
+  current_index: any;
+  songsDetail_next: any;
+  songsDetail_index: any;
   songsImage: any;
   title = 'Live All In';
   audioUrl = '';
@@ -32,9 +39,11 @@ export class HomePage implements OnInit {
   curr_playing_file: MediaObject;
   storageDirectory: any;
 
-  is_playing: boolean = false;
+  is_playing: boolean = true;
   is_in_play: boolean = false;
   is_ready: boolean = false;
+  isLastPlaying: boolean = true;
+  isFirstPlaying: boolean = true;
 
   message: any;
 
@@ -62,6 +71,10 @@ export class HomePage implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params && params.special) {
         this.data = JSON.parse(params.special);
+        this.current_index = JSON.parse(params.current_index);
+        this.all = JSON.parse(params.all);
+        this.next = JSON.parse(params.next);
+        this.prev = JSON.parse(params.prev);
       }
     });
 
@@ -85,16 +98,30 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+     var allSongs = this.all;     
+     var current_index = this.current_index;
+
+
      var songsDetail = this.data;
      this.songsImage = songsDetail.song.imageUrl;
      this.title = songsDetail.song.title;
      this.audioUrl = songsDetail.song.audioUrl;
      this.prepareAudioFile(this.audioUrl,this.title);
-     console.log('======================');
-     console.log(songsDetail);
-     console.log(songsDetail.song.imageUrl);
-     console.log('======================');
 
+     this.allSongs = allSongs;
+     this.current_index = current_index;
+
+      if( current_index === 0){
+        this.isFirstPlaying =  false;
+      }else{
+        this.isFirstPlaying =  true;
+      }
+
+      if( current_index === allSongs.length - 1){
+        this.isLastPlaying =  false;
+      }else{
+        this.isLastPlaying =  true;
+      }
 
   }
 
@@ -245,6 +272,7 @@ export class HomePage implements OnInit {
   }
 
   playRecording() {
+    
     this.curr_playing_file.play();
     this.toastCtrl
       .create({
@@ -319,4 +347,90 @@ export class HomePage implements OnInit {
     //   s
     // ); // and we add Number s to the string (converting it to String as well)
   }
+
+
+    onNextSongs(item,index){
+      this.stopPlayRecording();
+      console.log('Curent Index = ' + index);
+      const current_songs = item[index];
+      const index_next = parseInt(index + 1);      
+      const next_songs = item[index_next];
+      
+      var title_s = next_songs.song.title;
+      var audioUrl_s = next_songs.song.audioUrl;
+      this.title = title_s;      
+      this.songsImage = next_songs.song.imageUrl;      
+      this.audioUrl = audioUrl_s;
+
+
+      if( index_next === item.length - 1){
+        this.isLastPlaying =  false;
+      }else{
+        this.isLastPlaying =  true;
+      }
+
+      if( index_next === 0){
+        this.isFirstPlaying =  false;
+      }else{
+        this.isFirstPlaying =  true;
+      }
+
+      this.current_index = index_next;
+
+      console.log('=================Next Is Disable ==============');
+      console.log(index);
+      console.log(item.length);
+
+      console.log(this.isLastPlaying);
+      
+      this.prepareAudioFile(audioUrl_s,title_s);
+      
+
+    }
+
+    onPrevSongs(item,index){
+
+      this.stopPlayRecording();
+      console.log('Curent Index = ' + index);
+      const current_songs = item[index];
+      const index_next = index - 1;      
+      const prev_songs = item[index_next];
+      
+      var title_s = prev_songs.song.title;
+      var audioUrl_s = prev_songs.song.audioUrl;
+      this.title = title_s;      
+      this.songsImage = prev_songs.song.imageUrl;      
+      this.audioUrl = audioUrl_s;
+
+
+      if( index_next === item.length - 1){
+        this.isLastPlaying =  false;
+      }else{
+        this.isLastPlaying =  true;
+      }
+
+      if( index_next === 0){
+        this.isFirstPlaying =  false;
+      }else{
+        this.isFirstPlaying =  true;
+      }
+
+      this.current_index = index_next;
+
+      console.log('=================Prev Is Disable ==============');
+      console.log(index);
+      console.log(item.length);
+
+      console.log(this.isFirstPlaying);
+
+      
+      this.prepareAudioFile(audioUrl_s,title_s);
+      
+
+      
+
+    }
+
+
+
 }

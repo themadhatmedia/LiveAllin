@@ -24,6 +24,15 @@ export class PlaylistPage {
   listItems: any;
   playlist: any;
   reorder_songs: any;
+  full_list: any;
+
+
+
+  next_songs: any;
+  current_songs: any;
+  index_next: any;
+  index_prev: any;
+
 
   audio: any;
   showToggle:boolean = true;
@@ -166,7 +175,7 @@ export class PlaylistPage {
     this.songsToDownload = songs;
   }
 
-   onClickDetails(item){
+   /*onClickDetails(item){
 
       let navigationExtras: NavigationExtras = {
         queryParams: {
@@ -175,8 +184,43 @@ export class PlaylistPage {
       };
       this.router.navigate(['home'], navigationExtras);
 
-      /*console.log(item);
-      this.router.navigate(['home',{item:item}])*/
+      //console.log(item);
+      //this.router.navigate(['home',{item:item}])
+    }*/
+
+    onClickDetails(item,index){
+
+      const current_songs = item[index];
+
+      const index_next = parseInt(index + 1);
+      console.log(index_next);
+      const next_songs = item[index_next];
+
+      let prev_songs = index - 1;
+      console.log(prev_songs);
+      prev_songs = item[prev_songs];
+
+      console.log('current_songs');
+      console.log(current_songs);
+
+
+      console.log('prev_songs');
+      console.log(prev_songs);
+
+      console.log('next_songs');
+      console.log(next_songs);
+      
+      
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(current_songs),
+          current_index: index,
+          all: JSON.stringify(item),
+          next: JSON.stringify(next_songs),
+          prev: JSON.stringify(prev_songs)
+        }
+      };
+      this.router.navigate(['home'], navigationExtras);
     }
 
 }
