@@ -280,11 +280,18 @@ export class HomePage implements OnInit {
           if(this.isRepeat){
             this.playRecording();
           }else if(this.isShuffle){            
-            var myindex = this.randomNumber(0, this.all.length);
+            var myindex = this.randomNumber(0, this.all.length);            
             this.onNextSongs(this.all,myindex);
+            
 
           }else{
             this.onNextSongs(this.all,this.current_index);
+            this.stopPlayRecording();
+            setTimeout(function(){                         
+              //this.playRecording();
+              document.getElementById('playbtn').click();
+            }, 3000);
+
             
           }
 
