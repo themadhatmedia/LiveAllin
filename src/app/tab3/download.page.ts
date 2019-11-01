@@ -157,7 +157,7 @@ export class DownloadPage implements OnInit {
       console.log(index_next);
       const next_songs = item[index_next];
 
-      const current_songs = item[index];
+      const current_songs = song[0];
 
       let prev_songs = index - 1;
       console.log(prev_songs);
