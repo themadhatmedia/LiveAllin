@@ -18,7 +18,7 @@ import { Router,NavigationExtras } from '@angular/router';
 export class DownloadPage implements OnInit {
 
   allSongs: Song[] = [];
-
+  
   normalSongs: Song[] = [];
   instrumentalSongs: Song[] = [];
   backgroundVocalsSongs: Song[] = [];
@@ -137,7 +137,57 @@ export class DownloadPage implements OnInit {
     });
   }
 
-  async selectSong(songs: Song[], selectedIndex: number) {
+  selectSong(item,index){
+      
+      console.log(item);
+      item.push({'song':item});
+      console.log(item);
+
+      const c_current = item[index];
+
+      var song = [];
+      song.push({'song':c_current});
+      console.log('songvar');
+      console.log(song);
+
+      item = song[0];
+      console.log('=======item====');
+      console.log(item);
+      const index_next = parseInt(index + 1);
+      console.log(index_next);
+      const next_songs = item[index_next];
+
+      const current_songs = item[index];
+
+      let prev_songs = index - 1;
+      console.log(prev_songs);
+      prev_songs = item[prev_songs];
+
+
+      console.log('current_songs');
+      console.log(current_songs);
+
+
+      console.log('prev_songs');
+      console.log(prev_songs);
+
+      console.log('next_songs');
+      console.log(next_songs);
+      
+      
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(current_songs),
+          current_index: index,
+          all: JSON.stringify(item),
+          next: JSON.stringify(next_songs),
+          prev: JSON.stringify(prev_songs)
+        }
+      };
+      this.router.navigate(['home'], navigationExtras);
+  }
+
+/*  async selectSong(songs: Song[], selectedIndex: number) {
     const modal = await this.modalCtrl.create({
       component: MusicPlayerComponent,
       componentProps: {
@@ -149,7 +199,7 @@ export class DownloadPage implements OnInit {
       this.selectedSong = new Song();
     });
     return await modal.present();
-  }
+  }*/
 
   private addNewSongs(apiSongs: Song[]): void {
     let addedSong = false;

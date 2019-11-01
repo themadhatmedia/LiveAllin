@@ -424,8 +424,8 @@ export class HomePage implements OnInit {
     this.stopPlayRecording();
     console.log('Curent Index = ' + index);
     const current_songs = item[index];
-    const index_next = index - 1;      
-    const prev_songs = item[index_next];
+    const index_prev = Number(index - 1);  
+    const prev_songs = item[index_prev];
     
     var title_s = prev_songs.song.title;
     var audioUrl_s = prev_songs.song.audioUrl;
@@ -434,19 +434,19 @@ export class HomePage implements OnInit {
     this.audioUrl = audioUrl_s;
 
 
-    if( index_next === item.length - 1){
+    if( index_prev === item.length - 1){
       this.isLastPlaying =  false;
     }else{
       this.isLastPlaying =  true;
     }
 
-    if( index_next === 0){
+    if( index_prev === 0){
       this.isFirstPlaying =  false;
     }else{
       this.isFirstPlaying =  true;
     }
 
-    this.current_index = index_next;
+    this.current_index = index_prev;
 
     console.log('=================Prev Is Disable ==============');
     console.log(index);
