@@ -15,7 +15,7 @@
         </ion-label>
       </ion-item-divider>
       <ion-radio-group [(ngModel)]="selectedSong">
-        <ion-item *ngFor="let song of normalSongs; let index = index" (click)="onClickDetails(normalSongs)">
+        <ion-item *ngFor="let song of normalSongs; let index = index" (click)="onClickDetails(normalSongs,index)">
           <ion-label>{{ song.title }}</ion-label>
           <ion-radio slot="start" [value]="song"></ion-radio>
         </ion-item>

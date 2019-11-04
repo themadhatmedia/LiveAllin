@@ -8,6 +8,8 @@ import { Song } from '../models/song.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
+import { AuthService } from '../../core/services/auth.service';
+
 @Injectable({ providedIn: 'root' })
 
 export class SongService {
@@ -16,9 +18,11 @@ export class SongService {
   meta: Observable<any>;
 
   songsCollection: AngularFirestoreCollection<Song>;
+  songsCollectionByPlan: AngularFirestoreCollection<Song>;
 
   constructor(
     private file: File,
+    private auth: AuthService,
     private helper: HelperService,
     private transfer: FileTransfer,
     private db: AngularFirestore,
@@ -29,28 +33,62 @@ export class SongService {
   }
 
   private init(): void {
+
+    var plan_name = this.auth.user.planName;
+    console.log('Plan Name' +  plan_name);
     this.songsCollection = this.db.collection<Song>('songs');
+    
+    /*this.songsCollectionByPlan = this.db.collection<Song>('songs',
+      ref => ref.where('plan_name', '==', plan_name));*/
+
+
+
   }
 
   getSongs(): Observable<Song[]> {
-    return this.songsCollection.valueChanges();
+
+    var plan_name = this.auth.user.planName;
+    console.log('Plan Name' +  plan_name);
+    console.log('song services call GetSongs');
+    this.songsCollectionByPlan = this.db.collection<Song>('songs',
+      ref => ref.where('plan_name', '==', plan_name));
+    return this.songsCollectionByPlan.valueChanges();
   }
+
+
 
   savePlaylistmodal(song: Song, userEmail) {
       console.log(userEmail);
       console.log('add to playlist now');
       console.log('Save = ' + userEmail);
 
-      this.db.collection("playlist").add({
-        userEmail:userEmail,
-        userId:"1",
-        song:song,
-        sortBy:0
-      }).then((data)=>{
-        //console(data);
-      }).catch((err)=>{
-        //console.log(err);
-      })
+      
+      /*presentLoadingDefault() {
+        let loading = this.loadingCtrl.create({
+          message: 'Please wait...'
+        });
+
+        loading.present();
+
+        setTimeout(() => {
+          loading.dismiss();
+        }, 5000);
+      }*/
+        this.helper.presentLoading('Song added to playlist');
+
+        this.db.collection("playlist").add({
+          userEmail:userEmail,
+          userId:"1",
+          song:song,
+          sortBy:0
+        }).then((data)=>{
+          //console(data);
+           this.helper.dismissLoading();
+        }).catch((err)=>{
+          //console.log(err);
+        })
+
+      
   }
 
   savePlaylistmodalOrder(Reorderlist, userEmail) {

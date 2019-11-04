@@ -66,6 +66,7 @@ export class LibraryPage implements OnInit {
           default:
             alert('Invalid Song Type');
         }
+        console.log('2222222222');
         this.songsToDownload.splice(index, 1);
         this.saveSongs();
         this.helper.dismissLoading();
@@ -101,6 +102,7 @@ export class LibraryPage implements OnInit {
             alert('Invalid Song Type');
         }
       } else {
+        console.log('11111111111');
         this.songsToDownload.push(song);
       }
     });
@@ -119,10 +121,15 @@ export class LibraryPage implements OnInit {
   getSongsFromFirebase(): void {
     console.log('get songs');
     const songSub = this.songService.getSongs().subscribe(apiSongs => {
+      console.log('=============');
       console.log(apiSongs);
+      console.log('=============');
       this.addNewSongs(apiSongs);
+      console.log('+++++++++++++++++++++');
       console.log(this.allSongs);
-      this.filterSongsByReleaseDate(this.allSongs); // All Songs may just be dbSongs
+      console.log('+++++++++++++++++++++');
+      //this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
+      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
       songSub.unsubscribe();
     });
   }
@@ -163,6 +170,7 @@ export class LibraryPage implements OnInit {
   }
 
   private saveSongs(): void {
+    console.log('savesongs page');
     const allSongs = this.normalSongs.concat(
       this.instrumentalSongs.concat(this.backgroundVocalsSongs.concat(this.otherSongs.concat(this.songsToDownload)))
     );
