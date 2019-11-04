@@ -42,7 +42,7 @@ export class DownloadPage implements OnInit {
   }
 
   onClickDetails(item){
-
+    
      let navigationExtras: NavigationExtras = {
        queryParams: {
          special: JSON.stringify(item)
@@ -143,6 +143,7 @@ export class DownloadPage implements OnInit {
       item.push({'song':item});
       console.log(item);
 
+      return false;
       const c_current = item[index];
 
       var song = [];

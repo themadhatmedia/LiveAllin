@@ -383,6 +383,8 @@ export class HomePage implements OnInit {
 
 
   onNextSongs(item,index){
+    this.duration = -1;
+    this.position = 0;
     this.stopPlayRecording();
     console.log('Curent Index = ' + index);
     const current_songs = item[index];
@@ -421,6 +423,8 @@ export class HomePage implements OnInit {
 
   onPrevSongs(item,index){
 
+    this.duration = -1;
+    this.position = 0;
     this.stopPlayRecording();
     console.log('Curent Index = ' + index);
     const current_songs = item[index];
