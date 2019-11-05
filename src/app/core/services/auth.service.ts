@@ -53,6 +53,7 @@ export class AuthService {
   login(email: string, password: string): Promise<any> {
     return this.auth.auth.signInWithEmailAndPassword(email, password).then(token => {
       console.log('token: ' + JSON.stringify(token));
+      
       window.localStorage.setItem('userEmail',token.user.email);
       // const userQuery = this.db.collection<User>('users', ref => ref.where('email', '==', token.user.email)).valueChanges();
       // userQuery
@@ -91,6 +92,9 @@ export class AuthService {
       this.user.planType = dbUser.planType;
       this.user.signUpDate = dbUser.signUpDate;
       this.user.status = dbUser.status;
+      this.user.question1 = dbUser.question1;
+      this.user.question2 = dbUser.question2;
+      this.user.question3 = dbUser.question3;
       // this.user.uid = dbUser.uid;
     }
   }

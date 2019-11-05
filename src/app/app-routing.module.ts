@@ -6,7 +6,8 @@ const routes: Routes = [
   { path: '', canActivate: [RouteGuardService], loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'login', loadChildren: './auth/login/login.module#LoginPageModule' },
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'player', loadChildren: './downloadplayer/player.module#PlayerPageModule' }
+  { path: 'player', loadChildren: './downloadplayer/player.module#PlayerPageModule' },
+  { path: 'journal', loadChildren: './journal/journal.module#JournalPageModule' }
 
 ];
 @NgModule({

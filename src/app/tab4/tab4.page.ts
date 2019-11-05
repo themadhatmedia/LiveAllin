@@ -25,4 +25,9 @@ export class Tab4Page {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
+
+  journal(): void {
+    this.router.navigate(['/journal']);
+  }
+
 }

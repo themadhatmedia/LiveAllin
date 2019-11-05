@@ -8,6 +8,9 @@ export class User {
     public planType: string = '',
     public signUpDate: string = '',
     public status: string = '',
+    public question1: string = '',
+    public question2: string = '',
+    public question3: string = '',
     // public type: UserType = null,
     // public uid: string = ''
   ) {}

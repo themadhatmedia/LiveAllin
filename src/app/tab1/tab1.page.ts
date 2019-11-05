@@ -84,7 +84,7 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  async presentAlertPrompt(question: string, id: string) {
+  /*async presentAlertPrompt(question: string, id: string) {
       const alert = await this.alertController.create({
         header: 'Song Study',
         message: question,
@@ -112,5 +112,14 @@ export class Tab1Page implements OnInit {
         ]
       });
       await alert.present();
+    }*/
+
+  async presentAlertPrompt(question: string, id: string) {
+      const alert = await this.alertController.create({
+        header: this.quote.Quote,
+        
+      });
+      await alert.present();
     }
+
 }
