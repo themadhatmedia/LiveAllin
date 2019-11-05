@@ -67,7 +67,7 @@ export class LibraryPage implements OnInit {
             alert('Invalid Song Type');
         }
         console.log('2222222222');
-        this.songsToDownload.splice(index, 1);
+        //this.songsToDownload.splice(index, 1);
         this.saveSongs();
         this.helper.dismissLoading();
       });

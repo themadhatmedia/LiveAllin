@@ -34,8 +34,9 @@ export class SongService {
 
   private init(): void {
 
-    var plan_name = this.auth.user.planName;
-    console.log('Plan Name' +  plan_name);
+    /*var plan_name = this.auth.user.planName;
+    var plan_name = 'Early Bird Annual Plan';
+    console.log('Plan Name = ' +  plan_name);*/
     this.songsCollection = this.db.collection<Song>('songs');
     
     /*this.songsCollectionByPlan = this.db.collection<Song>('songs',
@@ -48,6 +49,7 @@ export class SongService {
   getSongs(): Observable<Song[]> {
 
     var plan_name = this.auth.user.planName;
+    var plan_name = 'Early Bird Annual Plan';
     console.log('Plan Name' +  plan_name);
     console.log('song services call GetSongs');
     this.songsCollectionByPlan = this.db.collection<Song>('songs',
