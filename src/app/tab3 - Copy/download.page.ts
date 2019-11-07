@@ -7,17 +7,18 @@ import { Song } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
 import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+import { Router,NavigationExtras } from '@angular/router';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'library.page.html',
-  styleUrls: ['library.page.scss']
+  selector: 'app-tab3',
+  templateUrl: 'download.page.html',
+  styleUrls: ['download.page.scss']
 })
 
-export class LibraryPage implements OnInit {
+export class DownloadPage implements OnInit {
 
   allSongs: Song[] = [];
-
+  
   normalSongs: Song[] = [];
   instrumentalSongs: Song[] = [];
   backgroundVocalsSongs: Song[] = [];
@@ -32,7 +33,7 @@ export class LibraryPage implements OnInit {
     private modalCtrl: ModalController,
     private nativeStorage: NativeStorage,
     public songService: SongService,
-    public downloadService: SongService
+    private router: Router,
     ) {
   }
 
@@ -40,17 +41,39 @@ export class LibraryPage implements OnInit {
     this.getSongsFromDB();
   }
 
-  savePlaylust(song: Song, index: number): void {
-    var userEmail = this.auth.user.email;
-    this.songService.savePlaylistmodal(song,userEmail);
-  }
+  onClickDetails(item,index){
+
+        
+      const current_songs = item[index];
+      const index_next = parseInt(index + 1);      
+      const next_songs = item[index_next];
+
+      let prev_songs = Number(index - 1);
+      prev_songs = item[prev_songs];
+
+      console.log('current_songs');
+      console.log(current_songs);
+
+      console.log('prev_songs');
+      console.log(prev_songs);
+
+      console.log('next_songs');
+      console.log(next_songs);
+            
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(current_songs),
+          current_index: index,
+          all: JSON.stringify(item),
+          next: JSON.stringify(next_songs),
+          prev: JSON.stringify(prev_songs)
+        }
+      };
+      this.router.navigate(['player'], navigationExtras);
+
+   }
 
   downloadSong(song: Song, index: number): void {
-    var userEmail = this.auth.user.email;
-    this.downloadService.saveDownloadmodal(song,userEmail); 
-  }
-
-  downloadSong_old(song: Song, index: number): void {
     this.helper.presentLoading('Downloading Song');
     this.songService.downloadSongAudio(song).then((audioEntry) => {
       song.audioPath = audioEntry.toURL();
@@ -72,8 +95,7 @@ export class LibraryPage implements OnInit {
           default:
             alert('Invalid Song Type');
         }
-        console.log('2222222222');
-        //this.songsToDownload.splice(index, 1);
+        this.songsToDownload.splice(index, 1);
         this.saveSongs();
         this.helper.dismissLoading();
       });
@@ -108,7 +130,6 @@ export class LibraryPage implements OnInit {
             alert('Invalid Song Type');
         }
       } else {
-        console.log('11111111111');
         this.songsToDownload.push(song);
       }
     });
@@ -127,20 +148,45 @@ export class LibraryPage implements OnInit {
   getSongsFromFirebase(): void {
     console.log('get songs');
     const songSub = this.songService.getSongs().subscribe(apiSongs => {
-      console.log('=============');
       console.log(apiSongs);
-      console.log('=============');
       this.addNewSongs(apiSongs);
-      console.log('+++++++++++++++++++++');
       console.log(this.allSongs);
-      console.log('+++++++++++++++++++++');
-      //this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
-      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
+      this.filterSongsByReleaseDate(this.allSongs); // All Songs may just be dbSongs
       songSub.unsubscribe();
     });
   }
 
-  async selectSong(songs: Song[], selectedIndex: number) {
+  selectSong(item,index){
+      
+      const current_songs = item[index];
+      const index_next = parseInt(index + 1);      
+      const next_songs = item[index_next];
+
+      let prev_songs = Number(index - 1);
+      prev_songs = item[prev_songs];
+
+      console.log('current_songs');
+      console.log(current_songs);
+
+      console.log('prev_songs');
+      console.log(prev_songs);
+
+      console.log('next_songs');
+      console.log(next_songs);
+            
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(current_songs),
+          current_index: index,
+          all: JSON.stringify(item),
+          next: JSON.stringify(next_songs),
+          prev: JSON.stringify(prev_songs)
+        }
+      };
+      this.router.navigate(['player'], navigationExtras);
+  }
+
+/*  async selectSong(songs: Song[], selectedIndex: number) {
     const modal = await this.modalCtrl.create({
       component: MusicPlayerComponent,
       componentProps: {
@@ -152,7 +198,7 @@ export class LibraryPage implements OnInit {
       this.selectedSong = new Song();
     });
     return await modal.present();
-  }
+  }*/
 
   private addNewSongs(apiSongs: Song[]): void {
     let addedSong = false;
@@ -176,7 +222,6 @@ export class LibraryPage implements OnInit {
   }
 
   private saveSongs(): void {
-    console.log('savesongs page');
     const allSongs = this.normalSongs.concat(
       this.instrumentalSongs.concat(this.backgroundVocalsSongs.concat(this.otherSongs.concat(this.songsToDownload)))
     );

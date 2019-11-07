@@ -97,21 +97,31 @@ export class PlaylistPage {
     event.detail.complete();
   }
 
-  getList() {
+  getListOrder() {
+    
 
     let myReorderData = this.listItems;
     var userEmail = this.auth.user.email;
     // first delete old playlist
-    const deletlist = this.db.collection('playlist', ref => ref.where('userEmail', '==', userEmail))
-    deletlist.get().subscribe(delitems => delitems.forEach( doc=> doc.ref.delete()));
+
+     setTimeout( () => {
+        console.log(' ==== Timeout ====');
+        const deletlist = this.db.collection('playlist', ref => ref.where('userEmail', '==', userEmail));
+        deletlist.get().subscribe(delitems => delitems.forEach( doc=> doc.ref.delete()));
+
+    }, 1000);
+
+    
+
 
     // Reorder  playlist
-     if(userEmail == ''){
-        var userEmail = window.localStorage.getItem('userEmail');
-      }
+    if(userEmail == ''){
+      var userEmail = window.localStorage.getItem('userEmail');
+    }
     setTimeout( () => {
-        this.songService.savePlaylistmodalOrder(myReorderData,userEmail);
-    }, 2200);
+        console.log(' ==== Timeout ====');
+        this.songService.reorderSavePlaylist(myReorderData,userEmail);
+    }, 4000);
 
 
 
@@ -151,12 +161,14 @@ export class PlaylistPage {
   }*/
 
   getSongsFromDB(): void {
-    this.nativeStorage.getItem('playlist').then(dbSongs => {
 
+    this.nativeStorage.getItem('playlist').then(dbSongs => {
+      console.log('=========play list page ==================');
       console.log(dbSongs);
       this.allSongs = dbSongs;
       this.getSongsFromFirebase();
     }).catch(() => {
+      console.log('=========Else ==================');
       this.getSongsFromFirebase();
     });
   }

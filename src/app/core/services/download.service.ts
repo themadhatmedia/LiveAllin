@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { Song } from '../models/song.model';
-import { Playlist } from '../models/song.model';
 import { Download } from '../models/song.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
@@ -16,13 +15,12 @@ import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 
-export class PlaylistService {
+export class DownloadService {
   userEmail:any;
   song: Blob;  
   meta: Observable<any>;
 
   songsCollection: AngularFirestoreCollection<Song>;
-  playlistCollection: AngularFirestoreCollection<Playlist>;
   downloadCollection: AngularFirestoreCollection<Download>;
 
   constructor(
@@ -45,8 +43,6 @@ export class PlaylistService {
       var userEmail = window.localStorage.getItem('userEmail');
     }
 
-    this.playlistCollection = this.db.collection<Playlist>('playlist',
-      ref => ref.where('userEmail', '==', userEmail).orderBy('sortBy', 'asc'));
 
 
     this.downloadCollection = this.db.collection<Download>('download',
@@ -59,13 +55,12 @@ export class PlaylistService {
     return this.songsCollection.valueChanges();
   }
 
-  getPlaylistSongs(): Observable<Song[]> {    
-    return this.playlistCollection.valueChanges();
-  }
 
- /* getDownloadlistSongs(): Observable<Download[]> {    
+
+  getDownloadlistSongs(): Observable<Download[]> { 
+     
     return this.downloadCollection.valueChanges();
-  }*/
+  }
 
   /*updatePlaylistOrder(index: index) {
 

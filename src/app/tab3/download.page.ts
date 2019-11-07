@@ -1,238 +1,154 @@
-import { AuthService } from './../core/services/auth.service';
-import { SongType } from './../core/models/song.model';
 import { HelperService } from './../core/services/helper.service';
+import { SubscriptionType } from './../core/models/user.model';
+import { AuthService } from './../core/services/auth.service';
+import { Router,NavigationExtras } from '@angular/router';
+
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { SongType } from './../core/models/song.model';
 import { Component, OnInit } from '@angular/core';
 import { SongService } from '../core/services/song.service';
-import { Song } from '../core/models/song.model';
+import { DownloadService } from '../core/services/download.service';
+
+import { Song,Download } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
 import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
-import { Router,NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'download.page.html',
   styleUrls: ['download.page.scss']
 })
+export class DownloadPage {
 
-export class DownloadPage implements OnInit {
+  listItems: any;
+  download: any;
+  reorder_songs: any;
+  full_list: any;
+
+
+
+  next_songs: any;
+  current_songs: any;
+  index_next: any;
+  index_prev: any;
+
+
+  audio: any;
+  showToggle:boolean = true;
+
 
   allSongs: Song[] = [];
-  
-  normalSongs: Song[] = [];
-  instrumentalSongs: Song[] = [];
-  backgroundVocalsSongs: Song[] = [];
-  otherSongs: Song[] = [];
   songsToDownload: Song[] = [];
+  SubscriptionType = SubscriptionType;
 
-  selectedSong: Song = new Song();
-
+  items: any;
+  btnName: any = 'edit';
+  flag: any = false;
   constructor(
-    private auth: AuthService,
-    private helper: HelperService,
-    private modalCtrl: ModalController,
+    public auth: AuthService,
+    public helper: HelperService,
+    private router: Router,
     private nativeStorage: NativeStorage,
     public songService: SongService,
-    private router: Router,
-    ) {
+    public downloadService: DownloadService,
+    private db: AngularFirestore,
+  ) {
+
+    this.download = this.db.collection('download');
+    const pl = this.db.collection('download');
+
+    this.downloadService.getDownloadlistSongs().subscribe(apiSongs => {
+      this.listItems = apiSongs;
+    });
+
+
   }
 
   ngOnInit() {
+
     this.getSongsFromDB();
+    console.log(this.auth.user.email);
+    this.audio = new Audio();
+    this.audio.src = 'https://firebasestorage.googleapis.com/v0/b/live-all-in-17081.appspot.com/o/audio%2Fat%20the%20same%20time.mp3?alt=media&token=6c7593d1-9bad-4dee-8e37-dbe5595425be';
+    this.audio.load();
+
   }
 
-  onClickDetails(item,index){
 
-        
-      const current_songs = item[index];
-      const index_next = parseInt(index + 1);      
-      const next_songs = item[index_next];
-
-      let prev_songs = Number(index - 1);
-      prev_songs = item[prev_songs];
-
-      console.log('current_songs');
-      console.log(current_songs);
-
-      console.log('prev_songs');
-      console.log(prev_songs);
-
-      console.log('next_songs');
-      console.log(next_songs);
-            
-      let navigationExtras: NavigationExtras = {
-        queryParams: {
-          special: JSON.stringify(current_songs),
-          current_index: index,
-          all: JSON.stringify(item),
-          next: JSON.stringify(next_songs),
-          prev: JSON.stringify(prev_songs)
-        }
-      };
-      this.router.navigate(['player'], navigationExtras);
-
-   }
-
-  downloadSong(song: Song, index: number): void {
-    this.helper.presentLoading('Downloading Song');
-    this.songService.downloadSongAudio(song).then((audioEntry) => {
-      song.audioPath = audioEntry.toURL();
-      this.songService.downloadSongImage(song).then((imageEntry) => {
-        song.imagePath = imageEntry.toURL();
-        switch (song.songType) {
-          case SongType.Normal:
-            this.normalSongs.push(song);
-            break;
-          case SongType.Instrumental:
-            this.instrumentalSongs.push(song);
-            break;
-          case SongType.BackgroundVocals:
-            this.backgroundVocalsSongs.push(song);
-            break;
-          case SongType.Other:
-            this.otherSongs.push(song);
-            break;
-          default:
-            alert('Invalid Song Type');
-        }
-        this.songsToDownload.splice(index, 1);
-        this.saveSongs();
-        this.helper.dismissLoading();
-      });
-    });
+  playAudio(mpplay): void {
+    console.log('play audio'+mpplay);
+     this.stopAudio();
+     this.audio.src = mpplay;
+     this.audio.pause();
+     this.audio.play();
+     //this.audio.loop = true;
   }
 
-  filterSongsByReleaseDate(songs: Song[]): void {
-    const currentDate = new Date();
-    // If it's a subscription user they only have access to songs since their signup date
-    if (this.auth.user.planType === 'subscription') {
-      songs = songs.filter(song => new Date(song.releaseDate) > new Date(this.auth.user.signUpDate));
-    } else if (this.auth.user.planType === 'charge' && !this.auth.user.planName.includes('Early')) {
-      songs = songs.filter(song => new Date(song.releaseDate) > new Date('12/31/18'));
-    }
-    const filteredSongs = songs.filter(song => new Date(song.releaseDate) < currentDate);
-    filteredSongs.forEach(song => {
-      if (song.audioPath) {
-        switch (song.songType) {
-          case SongType.Normal:
-            this.normalSongs.push(song);
-            break;
-          case SongType.Instrumental:
-            this.instrumentalSongs.push(song);
-            break;
-          case SongType.BackgroundVocals:
-            this.backgroundVocalsSongs.push(song);
-            break;
-          case SongType.Other:
-            this.otherSongs.push(song);
-            break;
-          default:
-            alert('Invalid Song Type');
-        }
-      } else {
-        this.songsToDownload.push(song);
-      }
-    });
-    this.sortSongs();
+  stopAudio():void {
+    this.audio.pause();
   }
 
   getSongsFromDB(): void {
-    this.nativeStorage.getItem('songs').then(dbSongs => {
+    this.nativeStorage.getItem('download').then(dbSongs => {
+
+      console.log('==============Download Page==========');
+      console.log(dbSongs);
       this.allSongs = dbSongs;
       this.getSongsFromFirebase();
     }).catch(() => {
+      console.log('==============Else==========');
       this.getSongsFromFirebase();
     });
   }
 
   getSongsFromFirebase(): void {
-    console.log('get songs');
-    const songSub = this.songService.getSongs().subscribe(apiSongs => {
+    
+    const songSub = this.downloadService.getDownloadlistSongs().subscribe(apiSongs => {
       console.log(apiSongs);
-      this.addNewSongs(apiSongs);
-      console.log(this.allSongs);
-      this.filterSongsByReleaseDate(this.allSongs); // All Songs may just be dbSongs
-      songSub.unsubscribe();
+      console.log('all songs Download');
+      //console.log(this.allSongs);
+      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
     });
   }
 
-  selectSong(item,index){
-      
-      const current_songs = item[index];
-      const index_next = parseInt(index + 1);      
-      const next_songs = item[index_next];
-
-      let prev_songs = Number(index - 1);
-      prev_songs = item[prev_songs];
-
-      console.log('current_songs');
-      console.log(current_songs);
-
-      console.log('prev_songs');
-      console.log(prev_songs);
-
-      console.log('next_songs');
-      console.log(next_songs);
-            
-      let navigationExtras: NavigationExtras = {
-        queryParams: {
-          special: JSON.stringify(current_songs),
-          current_index: index,
-          all: JSON.stringify(item),
-          next: JSON.stringify(next_songs),
-          prev: JSON.stringify(prev_songs)
-        }
-      };
-      this.router.navigate(['player'], navigationExtras);
+  filterSongsByReleaseDate(songs: Song[]): void {
+    this.songsToDownload = songs;
   }
 
-/*  async selectSong(songs: Song[], selectedIndex: number) {
-    const modal = await this.modalCtrl.create({
-      component: MusicPlayerComponent,
-      componentProps: {
-        'songs': songs,
-        'activeIndex': selectedIndex
+  onClickDetails(item,index){
+
+    const current_songs = item[index];
+
+    const index_next = parseInt(index + 1);
+    console.log(index_next);
+    const next_songs = item[index_next];
+
+    let prev_songs = index - 1;
+    console.log(prev_songs);
+    prev_songs = item[prev_songs];
+
+    console.log('current_songs');
+    console.log(current_songs);
+
+
+    console.log('prev_songs');
+    console.log(prev_songs);
+
+    console.log('next_songs');
+    console.log(next_songs);
+    
+    
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        special: JSON.stringify(current_songs),
+        current_index: index,
+        all: JSON.stringify(item),
+        next: JSON.stringify(next_songs),
+        prev: JSON.stringify(prev_songs)
       }
-    });
-    modal.onDidDismiss().then(() => {
-      this.selectedSong = new Song();
-    });
-    return await modal.present();
-  }*/
-
-  private addNewSongs(apiSongs: Song[]): void {
-    let addedSong = false;
-    apiSongs.forEach(apiSong => {
-      let foundSong = false;
-      for (let i = 0; i < this.allSongs.length; i++) {
-        const song = this.allSongs[i];
-        if (apiSong.title === song.title) {
-          foundSong = true;
-          break;
-        }
-      }
-      if (!foundSong) {
-        addedSong = true;
-        this.allSongs.push(apiSong);
-      }
-    });
-    if (addedSong) {
-      this.nativeStorage.setItem('songs', this.allSongs);
-    }
+    };
+    this.router.navigate(['home'], navigationExtras);
   }
 
-  private saveSongs(): void {
-    const allSongs = this.normalSongs.concat(
-      this.instrumentalSongs.concat(this.backgroundVocalsSongs.concat(this.otherSongs.concat(this.songsToDownload)))
-    );
-    this.nativeStorage.setItem('songs', allSongs);
-  }
-
-  private sortSongs(): void {
-    this.normalSongs.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-    this.instrumentalSongs.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-    this.songsToDownload.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-    this.backgroundVocalsSongs.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-    this.otherSongs.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-  }
 }

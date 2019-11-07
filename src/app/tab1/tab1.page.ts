@@ -23,6 +23,7 @@ export class Tab1Page implements OnInit {
   }
 
   ngOnInit() {
+    this.dailyQuotesFromFirebase();
     this.getCurrentQuotesFromFirebase();
     this.getCurrentSongStudyQuestion();
   }
@@ -36,7 +37,10 @@ export class Tab1Page implements OnInit {
   getCurrentQuotesFromFirebase(): void {
 
     const quoteSub = this.quoteService.getQuoteFromDB(this.currentDate).subscribe(apiQuotes => {
-
+    //const quoteSub = this.quoteService.getAllQuotes().subscribe(apiQuotes => {
+      console.log('apiQuotes');
+      console.log(apiQuotes);
+      console.log(apiQuotes.length);
       if (apiQuotes.length < 1) {
         this.quote.Author = "I will praise the name of God with a song.";
         this.quote.Quote = "Music has the power to deeply move our souls.  It connects us with heaven revealing our God-given strength and potential.\n\nIt lifts us to higher purposes and inspires us to greater climbs.  Music can speak for us and to us.  It can express what our lips cannot.\n\nIt is comfort, peace, vision, brilliance, hope, awe and encouragement - in perfect harmony.\n\nSimply put, music brings us to God.\n\nIt is a privilege to share the Live All In journey and music with you.";
@@ -47,9 +51,49 @@ export class Tab1Page implements OnInit {
         } else {
             this.quote.Author = apiQuotes[0].Author;
         }
-
+             
         this.quote.Quote = apiQuotes[0].Quote;
         this.quote.Date = apiQuotes[0].Date;
+
+      }
+
+      quoteSub.unsubscribe();
+    });
+  }
+
+  dailyQuotesFromFirebase(): void {
+
+    
+    const quoteSub = this.quoteService.getAllQuotes().subscribe(apiQuotes => {
+      console.log('apiQuotes');
+      console.log(apiQuotes);
+      console.log(apiQuotes.length);
+      if (apiQuotes.length < 1) {
+        
+        this.quote.Author = "I will praise the name of God with a song.";
+        this.quote.Quote = "Music has the power to deeply move our souls.  It connects us with heaven revealing our God-given strength and potential.\n\nIt lifts us to higher purposes and inspires us to greater climbs.  Music can speak for us and to us.  It can express what our lips cannot.\n\nIt is comfort, peace, vision, brilliance, hope, awe and encouragement - in perfect harmony.\n\nSimply put, music brings us to God.\n\nIt is a privilege to share the Live All In journey and music with you.";
+        this.quote.Date = "";
+
+      } else {
+
+        if (apiQuotes[0].Author === "") {
+            this.quote.Author = "Anonymous";
+        } else {
+            this.quote.Author = apiQuotes[0].Author;
+        }
+        var myindex = this.randomNumber(0, apiQuotes.length);       
+        var today_quote = apiQuotes[myindex].Quote;
+        //this.quote.Date = apiQuotes[myindex].Date;
+
+        
+        //window.localStorage.removeItem('today');
+        var today = window.localStorage.getItem('today');
+        console.log('today');
+        console.log(today);
+        if(today != this.currentDate || today == 'null'){
+          this.presentAlertPromptQuote(today_quote);
+        }
+
       }
 
       quoteSub.unsubscribe();
@@ -75,7 +119,7 @@ export class Tab1Page implements OnInit {
       apiSongStudy.forEach(res => {
         const isAnswered = this.songStudyService.getUserIsAnswered(res.id, userEmail).subscribe(song=> {
           if(song.length == 0) {
-            this.presentAlertPrompt(res.question, res.id);
+            //this.presentAlertPrompt(res.question, res.id);
           }
         });
       });
@@ -84,7 +128,7 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  /*async presentAlertPrompt(question: string, id: string) {
+  async presentAlertPrompt(question: string, id: string) {
       const alert = await this.alertController.create({
         header: 'Song Study',
         message: question,
@@ -112,14 +156,27 @@ export class Tab1Page implements OnInit {
         ]
       });
       await alert.present();
-    }*/
+    }
 
-  async presentAlertPrompt(question: string, id: string) {
-      const alert = await this.alertController.create({
-        header: this.quote.Quote,
-        
+  async presentAlertPromptQuote(quote: string) {
+
+      var today = window.localStorage.setItem('today',this.currentDate);
+      let alert =  await this.alertController.create({
+        message: quote, 
+        buttons: ['Dismiss']
       });
       await alert.present();
-    }
+
+      /*const alert = await this.alertController.create({
+        header: quote,        
+      });
+      await alert.present();*/
+  }
+
+  randomNumber(min, max) {  
+      min = Math.ceil(min); 
+      max = Math.floor(max); 
+      return Math.floor(Math.random() * (max - min + 1)) + min; 
+  } 
 
 }

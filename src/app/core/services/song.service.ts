@@ -5,10 +5,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { Song } from '../models/song.model';
+import { Playlist } from '../models/song.model';
+import { Download } from '../models/song.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({ providedIn: 'root' })
 
@@ -19,6 +22,8 @@ export class SongService {
 
   songsCollection: AngularFirestoreCollection<Song>;
   songsCollectionByPlan: AngularFirestoreCollection<Song>;
+  songsPP: AngularFirestoreCollection<Playlist>;
+  songsDownload: AngularFirestoreCollection<Download>;
 
   constructor(
     private file: File,
@@ -27,7 +32,8 @@ export class SongService {
     private transfer: FileTransfer,
     private db: AngularFirestore,
     private nativeStorage: NativeStorage,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private toastCtrl: ToastController,
   ) {
     this.init();
   }
@@ -55,6 +61,10 @@ export class SongService {
     this.songsCollectionByPlan = this.db.collection<Song>('songs',
       ref => ref.where('plan_name', '==', plan_name));
     return this.songsCollectionByPlan.valueChanges();
+
+   
+   
+
   }
 
 
@@ -76,24 +86,88 @@ export class SongService {
           loading.dismiss();
         }, 5000);
       }*/
-        this.helper.presentLoading('Song added to playlist');
 
-        this.db.collection("playlist").add({
-          userEmail:userEmail,
-          userId:"1",
-          song:song,
-          sortBy:0
-        }).then((data)=>{
-          //console(data);
-           this.helper.dismissLoading();
-        }).catch((err)=>{
-          //console.log(err);
-        })
 
+      this.songsPP = this.db.collection<Playlist>('playlist',
+      ref => ref.where('song_name', '==', song.title));
+      const songSub = this.songsPP.valueChanges();
+
+      songSub.subscribe(apiQuotes => {
+          console.log('apiQuotes');
+          console.log(apiQuotes);
+          console.log(apiQuotes.length);
+          if(apiQuotes.length == 0){
+
+              this.helper.presentLoading('Song added to playlist');
+              this.db.collection("playlist").add({
+                userEmail:userEmail,
+                userId:"1",
+                song:song,
+                sortBy:0,
+                song_name:song.title
+              }).then((data)=>{
+                //console(data);
+                 this.helper.dismissLoading();
+              }).catch((err)=>{
+                //console.log(err);
+              })
+
+          }else{
+
+            /*this.toastCtrl
+              .create({
+                message: `Already Exits`,
+                duration: 2000
+              }).then(toastEl => toastEl.present());*/
+
+          }
+      });  
       
   }
 
-  savePlaylistmodalOrder(Reorderlist, userEmail) {
+  saveDownloadmodal(song: Song, userEmail) {
+
+      console.log(userEmail);
+      console.log('add to playlist now');
+      console.log('Save = ' + userEmail);
+
+      this.songsDownload = this.db.collection<Download>('download',
+      ref => ref.where('song_name', '==', song.title));
+      const songSub = this.songsDownload.valueChanges();
+
+      songSub.subscribe(apiQuotes => {
+        
+          if(apiQuotes.length == 0){
+
+              this.helper.presentLoading('Added to Download');
+              this.db.collection("download").add({
+                userEmail:userEmail,
+                userId:"1",
+                song:song,
+                sortBy:0,
+                song_name:song.title
+              }).then((data)=>{
+                
+                 this.helper.dismissLoading();
+              }).catch((err)=>{
+                
+              })
+
+          }else{
+
+           /* this.toastCtrl
+              .create({
+                message: `Already Exits`,
+                duration: 2000
+              }).then(toastEl => toastEl.present());*/
+
+          }
+      });  
+      
+  }
+
+  reorderSavePlaylist(Reorderlist, userEmail) {
+    
       console.log(userEmail);
       console.log('===================================================');
       console.log(Reorderlist);

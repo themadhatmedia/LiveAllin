@@ -71,14 +71,21 @@ export class JournalPage {
   login(form){
     console.log(form);
     console.log(form.value);
-     console.log(this.userEmail);
-     const data = {  
+    console.log(this.userEmail);
+    const data = {  
       question1:form.value.question1,
       question2:form.value.question2,
       question3:form.value.question3,
-     }
-     const members = this.db.doc( `users/${this.userEmail}`);
-     members.update(data);
+    }
+    const members = this.db.doc( `users/${this.userEmail}`);
+    //members.update(data);
+
+    this.helper.presentLoading('Question saved');
+    members.update(data).then((data)=>{
+       this.helper.dismissLoading();
+    }).catch((err)=>{
+      //console.log(err);
+    })
       
    
   }

@@ -18,6 +18,16 @@ export class Playlist {
     songType: number;
 }
 
+export class Download {
+    title = '';
+    releaseDate = '';
+    audioUrl = '';
+    audioPath = '';
+    imageUrl = '';
+    imagePath = '';
+    songType: number;
+}
+
 export enum SongType {
     Normal = 0,
     Instrumental = 1,

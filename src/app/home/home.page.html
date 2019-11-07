@@ -1,3 +1,14 @@
+<!-- Danger back button next to a menu button -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button color="danger"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Back To List</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="ion-padding getstart" style="background-image: url('../../assets/logos/DashboardLogo.png');">
   <!-- Playback section -->
   <div text-center>
@@ -45,7 +56,13 @@
       <ion-row class="ion-align-items-center ion-justify-content-center" style="height: 100%">
         <ion-col>
           <!-- Backwards -->
-          <ion-fab-button class="skip-btn" color="danger" [disabled]="!isFirstPlaying" (click)="onPrevSongs(allSongs,current_index)">
+          <!-- <ion-fab-button class="skip-btn" color="danger" [disabled]="!isFirstPlaying" (click)="onPrevSongs(allSongs,current_index)">
+            &nbsp;&nbsp;<ion-icon name="skip-backward"></ion-icon>&nbsp;&nbsp;
+          </ion-fab-button> -->
+
+          <!-- Backwards -->
+          <ion-fab-button class="skip-btn" color="primary" [disabled]="!is_ready || !is_in_play"
+            (click)="controlSeconds('back')">
             &nbsp;&nbsp;<ion-icon name="skip-backward"></ion-icon>&nbsp;&nbsp;
           </ion-fab-button>
         </ion-col>
@@ -63,9 +80,16 @@
         </ion-col>
         <ion-col>
           <!-- Forwards -->
-          <ion-fab-button class="skip-btn" color="danger" [disabled]="!isLastPlaying" (click)="onNextSongs(allSongs,current_index)">
+          <!-- <ion-fab-button class="skip-btn" color="danger" [disabled]="!isLastPlaying" (click)="onNextSongs(allSongs,current_index)">
+            &nbsp;&nbsp;<ion-icon name="skip-forward"></ion-icon>&nbsp;&nbsp;
+          </ion-fab-button> -->
+
+           <!-- Forwards -->
+          <ion-fab-button class="skip-btn" color="primary" [disabled]="!is_ready || !is_in_play"
+            (click)="controlSeconds('forward')">
             &nbsp;&nbsp;<ion-icon name="skip-forward"></ion-icon>&nbsp;&nbsp;
           </ion-fab-button>
+
         </ion-col>
       </ion-row>
     </ion-grid>

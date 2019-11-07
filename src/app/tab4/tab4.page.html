@@ -26,7 +26,12 @@
       </div>
     </ion-item>
   </ion-list>
-  <ion-button id="logout-button" color="secondary" (click)="logout()">Logout</ion-button>
+
+
+  
+
+
+  <!-- <ion-button id="logout-button" color="secondary" (click)="logout()">Logout</ion-button> -->
 
   <div id="site-link">
     Download toolkits and manage your account at
@@ -34,10 +39,17 @@
   </div>
   <div id="youtube-link">
     Visit our YouTube channel at
-    <ion-button
-      color="primary" fill="red" (click)="helper.openURL('https://www.youtube.com/user/hwdotcom2008')"><ion-icon name="logo-youtube"></ion-icon></ion-button>
-    <ion-button  color="secondary" (click)="journal()">JOURNAL</ion-button>
+    <ion-button color="primary" fill="red" (click)="helper.openURL('https://www.youtube.com/user/hwdotcom2008')"><ion-icon name="logo-youtube"></ion-icon></ion-button>    
   </div>
+
+  <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="full" (click)="journal()">JOURNAL</ion-button>
+          <ion-button expand="block" color="secondary" (click)="logout()">Logout</ion-button>
+        </ion-col>
+      </ion-row>
+  </ion-grid>
 
 
 </ion-content>

@@ -250,6 +250,8 @@ export class HomePage implements OnInit {
   }
 
   setRecordingToPlay() {
+    console.log('=============================');
+    console.log(this.isShuffle);
     this.songsImage = this.songsImage;
     this.title = this.title;
     this.curr_playing_file = this.createAudioFile(
@@ -278,7 +280,7 @@ export class HomePage implements OnInit {
           this.is_in_play = false;
           this.is_playing = false;
           if(this.isRepeat){
-            this.playRecording();
+            this.playRecording();            
           }else if(this.isShuffle){            
             var myindex = this.randomNumber(0, this.all.length);            
             this.onNextSongs(this.all,myindex);
@@ -287,10 +289,10 @@ export class HomePage implements OnInit {
           }else{
             this.onNextSongs(this.all,this.current_index);
             this.stopPlayRecording();
-            setTimeout(function(){                         
+            /*setTimeout(function(){                         
               //this.playRecording();
               document.getElementById('playbtn').click();
-            }, 3000);
+            }, 3000);*/
 
             
           }
@@ -337,7 +339,7 @@ export class HomePage implements OnInit {
 
     let number = this.position;
     switch (action) {
-      case 'back':
+      case 'back':        
         this.position = number < step ? 0.001 : number - step;
         this.toastCtrl
           .create({
