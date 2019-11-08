@@ -20,7 +20,7 @@ export class PlaylistService {
   userEmail:any;
   song: Blob;  
   meta: Observable<any>;
-
+  itemDoc:any;
   songsCollection: AngularFirestoreCollection<Song>;
   playlistCollection: AngularFirestoreCollection<Playlist>;
   downloadCollection: AngularFirestoreCollection<Download>;
@@ -59,9 +59,27 @@ export class PlaylistService {
     return this.songsCollection.valueChanges();
   }
 
-  getPlaylistSongs(): Observable<Song[]> {    
-    return this.playlistCollection.valueChanges();
+
+    getPlaylistSongs(): Observable<Song[]> {    
+
+    this.itemDoc = this.db.doc<Playlist>('playlist/pl_robert.gartside83@gmail.com');
+    return  this.itemDoc.valueChanges();
+    /*this.item.subscribe(res=>{
+        console.log('pppppppppppppppp');
+        console.log(res);
+        this.myPlaylist = res.my_playlist;
+        
+    });
+    
+
+    console.log('cccccccccccc');
+    return this.myPlaylist;*/
+
   }
+
+  /*getPlaylistSongs(): Observable<Song[]> {    
+    return this.playlistCollection.valueChanges();
+  }*/
 
  /* getDownloadlistSongs(): Observable<Download[]> {    
     return this.downloadCollection.valueChanges();

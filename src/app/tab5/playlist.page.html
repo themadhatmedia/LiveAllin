@@ -26,22 +26,22 @@
       <ion-list>
         <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="false">
 
-          <ion-item *ngFor="let playlist of songsToDownload; let index = index" (click)="onClickDetails(songsToDownload,index)" >
+          <ion-item *ngFor="let playlist of songsToDownload; let index = index" (click)="onClickDetailsPlayer(songsToDownload,index)" >
             <ion-icon name="musical-notes" style="margin-right:5px; "></ion-icon>
             <!-- <ion-icon name="play" (click)="playAudio(playlist.song.audioUrl)"></ion-icon>
             <ion-icon name="pause" (click)="stopAudio(playlist.song.audioUrl)"></ion-icon> -->
             <ion-label>
-              {{ playlist.song.title }}
+              {{ playlist.title }}
             </ion-label>
             <ion-reorder></ion-reorder>
           </ion-item>
 
         </ion-reorder-group>
       </ion-list>
-      <!-- <ion-list text-center>
+      <ion-list text-center>
         <ion-button (click)="getListOrder()">
           Updated Reoder
         </ion-button>
-      </ion-list> -->
+      </ion-list>
     </ion-content>
   </ion-app>

@@ -55,6 +55,7 @@ export class PlaylistPage {
     private db: AngularFirestore,
   ) {
 
+
     /*this.listItems = [
       "1. Aylin Roberts",
       "2. Autumn Kuhic",
@@ -70,8 +71,15 @@ export class PlaylistPage {
     this.playlist = this.db.collection('playlist');
     const pl = this.db.collection('playlist');
 
-    this.playlistService.getPlaylistSongs().subscribe(apiSongs => {
-      this.listItems = apiSongs;
+    this.listItems = this.playlistService.getPlaylistSongs().subscribe((apiSongs:any) => {
+      
+      if(typeof apiSongs == "undefined"){
+        console.log('No found any playlist songs');
+      }else{
+        this.listItems = apiSongs.my_playlist;
+        console.log('vvvvvvvvvvv');
+      }
+
     });
 
 
@@ -102,26 +110,14 @@ export class PlaylistPage {
 
     let myReorderData = this.listItems;
     var userEmail = this.auth.user.email;
-    // first delete old playlist
-
-     setTimeout( () => {
-        console.log(' ==== Timeout ====');
-        const deletlist = this.db.collection('playlist', ref => ref.where('userEmail', '==', userEmail));
-        deletlist.get().subscribe(delitems => delitems.forEach( doc=> doc.ref.delete()));
-
-    }, 1000);
-
     
+    var my_custome_doc = 'pl_'+userEmail;
+    
+    this.db.collection("playlist").doc(my_custome_doc).set({        
+        my_playlist: myReorderData
+    })
 
 
-    // Reorder  playlist
-    if(userEmail == ''){
-      var userEmail = window.localStorage.getItem('userEmail');
-    }
-    setTimeout( () => {
-        console.log(' ==== Timeout ====');
-        this.songService.reorderSavePlaylist(myReorderData,userEmail);
-    }, 4000);
 
 
 
@@ -174,16 +170,22 @@ export class PlaylistPage {
   }
 
   getSongsFromFirebase(): void {
-    console.log('get playlist songs');
-    const songSub = this.playlistService.getPlaylistSongs().subscribe(apiSongs => {
-      console.log(apiSongs);
+    
+    const songSub = this.playlistService.getPlaylistSongs().subscribe((apiSongs:any) => {
       console.log('all songs playlist');
       console.log(this.allSongs);
-      this.filterSongsByReleaseDate(apiSongs); // All Songs may just be dbSongs
+
+      if(typeof apiSongs == "undefined"){
+        console.log('No');
+      }else{        
+        this.filterSongsByReleaseDate(apiSongs.my_playlist); // All Songs may just be dbSongs        
+      }
     });
   }
 
   filterSongsByReleaseDate(songs: Song[]): void {
+    console.log('======================================================================');
+    console.log(songs);
     this.songsToDownload = songs;
   }
 
@@ -233,6 +235,42 @@ export class PlaylistPage {
         }
       };
       this.router.navigate(['home'], navigationExtras);
+    }
+
+
+    onClickDetailsPlayer(item,index){
+
+      const current_songs = item[index];
+
+      const index_next = parseInt(index + 1);
+      console.log(index_next);
+      const next_songs = item[index_next];
+
+      let prev_songs = index - 1;
+      console.log(prev_songs);
+      prev_songs = item[prev_songs];
+
+      console.log('current_songs');
+      console.log(current_songs);
+
+
+      console.log('prev_songs');
+      console.log(prev_songs);
+
+      console.log('next_songs');
+      console.log(next_songs);
+      
+      
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          special: JSON.stringify(current_songs),
+          current_index: index,
+          all: JSON.stringify(item),
+          next: JSON.stringify(next_songs),
+          prev: JSON.stringify(prev_songs)
+        }
+      };
+      this.router.navigate(['listhome'], navigationExtras);
     }
 
 }

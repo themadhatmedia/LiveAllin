@@ -69,6 +69,7 @@ export class JournalPage {
   }
   
   login(form){
+
     console.log(form);
     console.log(form.value);
     console.log(this.userEmail);
@@ -77,6 +78,14 @@ export class JournalPage {
       question2:form.value.question2,
       question3:form.value.question3,
     }
+
+    var cityRef = this.db.collection('users').doc('robert.gartside83@gmail.com');
+    var setWithMerge = cityRef.set({
+        question1: form.value.question1,
+        question2: form.value.question2,
+        question3: form.value.question3
+    }, { merge: true });
+
     const members = this.db.doc( `users/${this.userEmail}`);
     //members.update(data);
 

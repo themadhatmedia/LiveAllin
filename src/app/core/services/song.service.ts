@@ -16,15 +16,18 @@ import { ToastController } from '@ionic/angular';
 @Injectable({ providedIn: 'root' })
 
 export class SongService {
+  itemDoc: any;
+  songSub: any;
   collectionRef:any;
   song: Blob;
   meta: Observable<any>;
-
+  myPlaylist = [];
   songsCollection: AngularFirestoreCollection<Song>;
   songsCollectionByPlan: AngularFirestoreCollection<Song>;
   songsPP: AngularFirestoreCollection<Playlist>;
   songsDownload: AngularFirestoreCollection<Download>;
-
+  
+  isSave: boolean = true;
   constructor(
     private file: File,
     private auth: AuthService,
@@ -70,58 +73,69 @@ export class SongService {
 
 
   savePlaylistmodal(song: Song, userEmail) {
-      console.log(userEmail);
-      console.log('add to playlist now');
-      console.log('Save = ' + userEmail);
 
-      
-      /*presentLoadingDefault() {
-        let loading = this.loadingCtrl.create({
-          message: 'Please wait...'
-        });
+      console.log(song.title);
+      var my_custome_doc = 'pl_'+userEmail; 
+      let isSavenew = true;
+      this.itemDoc = this.db.doc<Playlist>('playlist/'+my_custome_doc+'');
+      this.songSub = this.itemDoc.valueChanges();
+      this.songSub.subscribe((res:any)=>{
+          
+           if(typeof res == "undefined"){
+              console.log('No found any playlist songs');
 
-        loading.present();
+            }else{
+              
+              this.myPlaylist = res.my_playlist;
+              let listofp = res.my_playlist;
+              
+              listofp.forEach(function(val, key) {
+                
+                if(val.title == song.title){                      
+                    isSavenew = false;
+                    return false;
+                }
 
-        setTimeout(() => {
-          loading.dismiss();
-        }, 5000);
-      }*/
+              })
 
 
-      this.songsPP = this.db.collection<Playlist>('playlist',
-      ref => ref.where('song_name', '==', song.title));
-      const songSub = this.songsPP.valueChanges();
+            }
 
-      songSub.subscribe(apiQuotes => {
-          console.log('apiQuotes');
-          console.log(apiQuotes);
-          console.log(apiQuotes.length);
-          if(apiQuotes.length == 0){
+          if(isSavenew == false){
+            return false;
+          }
 
-              this.helper.presentLoading('Song added to playlist');
-              this.db.collection("playlist").add({
-                userEmail:userEmail,
-                userId:"1",
-                song:song,
-                sortBy:0,
-                song_name:song.title
-              }).then((data)=>{
-                //console(data);
+      });
+
+      setTimeout(() => {
+
+          if(isSavenew)  {
+            
+              console.log('need to salve');
+              this.helper.presentLoading('Added to Playlist');
+              this.myPlaylist.unshift(song);
+              var my_custome_doc = 'pl_'+userEmail;          
+              this.db.collection("playlist").doc(my_custome_doc).set({        
+                  my_playlist: this.myPlaylist
+              }).then((data)=>{                
                  this.helper.dismissLoading();
               }).catch((err)=>{
-                //console.log(err);
+                
               })
+
 
           }else{
 
-            /*this.toastCtrl
-              .create({
-                message: `Already Exits`,
-                duration: 2000
-              }).then(toastEl => toastEl.present());*/
-
+            this.toastCtrl
+            .create({
+                message: `Already added`,
+                duration: 500
+            }).then(toastEl => toastEl.present());
+            
           }
-      });  
+               
+      }, 2000);
+     
       
   }
 
@@ -155,11 +169,11 @@ export class SongService {
 
           }else{
 
-           /* this.toastCtrl
+            this.toastCtrl
               .create({
-                message: `Already Exits`,
-                duration: 2000
-              }).then(toastEl => toastEl.present());*/
+                message: `Already download`,
+                duration: 500
+              }).then(toastEl => toastEl.present());
 
           }
       });  
@@ -181,9 +195,7 @@ export class SongService {
             song:val.song,
             sortBy:key
           }).then((data)=>{
-            //console(data);
           }).catch((err)=>{
-            //console.log(err);
           });
       })
   }
@@ -214,16 +226,17 @@ export class SongService {
 
   // Not using right now but should figure out since file transfer plugin is deprecated
   downloadSong(): void {
-  //   console.log('in downloadSong');
-  //   // const fileTransfer: FileTransferObject = this.transfer.create();
 
-  //   const ref = this.storage.ref(`/audio/2014-12-006-youll-never-run-out-of-love-256k-eng.mp3`);
-  //   this.meta = ref.getMetadata();
-  //   this.meta.subscribe(res => {
-  //     console.log(res);
-  //   });
+    //   console.log('in downloadSong');
+    //   // const fileTransfer: FileTransferObject = this.transfer.create();
 
-  //   // const httpsReference = this.storage.refFromURL('https://firebasestorage.googleapis.com/b/bucket/o/images%20stars.jpg');
+    //   const ref = this.storage.ref(`/audio/2014-12-006-youll-never-run-out-of-love-256k-eng.mp3`);
+    //   this.meta = ref.getMetadata();
+    //   this.meta.subscribe(res => {
+    //     console.log(res);
+    //   });
+
+    //   // const httpsReference = this.storage.refFromURL('https://firebasestorage.googleapis.com/b/bucket/o/images%20stars.jpg');
     const url = `https://firebasestorage.googleapis.com/v0/b/live-all-in-test.appspot.com/o/audio%2FBe%20Where%20You%20Are.mp3?alt=media&token=819e99ea-0a22-4d56-9f05-c51257d53fae`;
     console.log(url);
     // This can be downloaded directly:
@@ -251,18 +264,18 @@ export class SongService {
         });
     });
 
-    //   window.resolveLocalFileSystemURL(this.file.dataDirectory, (dir) => {
-    //     console.log("Access to the directory granted succesfully");
-    //     dir.getFile(filename, {create:true}, function(file) {
-    //         console.log("File created succesfully.");
-    //         file.createWriter(function(fileWriter) {
-    //             console.log("Writing content to file");
-    //             fileWriter.write(DataBlob);
-    //         }, function(){
-    //             alert('Unable to save file in path '+ folderpath);
-    //         });
-    //     });
-    // });
+      //   window.resolveLocalFileSystemURL(this.file.dataDirectory, (dir) => {
+      //     console.log("Access to the directory granted succesfully");
+      //     dir.getFile(filename, {create:true}, function(file) {
+      //         console.log("File created succesfully.");
+      //         file.createWriter(function(fileWriter) {
+      //             console.log("Writing content to file");
+      //             fileWriter.write(DataBlob);
+      //         }, function(){
+      //             alert('Unable to save file in path '+ folderpath);
+      //         });
+      //     });
+      // });
 
       // const reader = new FileReader();
       // reader.onloadend = (event) => {
