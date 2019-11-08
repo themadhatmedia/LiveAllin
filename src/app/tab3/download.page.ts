@@ -12,7 +12,7 @@ import { DownloadService } from '../core/services/download.service';
 import { Song,Download } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
-import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+//import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
 
 @Component({
   selector: 'app-tab3',

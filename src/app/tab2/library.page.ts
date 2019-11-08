@@ -6,7 +6,7 @@ import { SongService } from '../core/services/song.service';
 import { Song } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
-import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+//import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
 
 @Component({
   selector: 'app-tab2',
@@ -140,7 +140,7 @@ export class LibraryPage implements OnInit {
     });
   }
 
-  async selectSong(songs: Song[], selectedIndex: number) {
+  /*async selectSong(songs: Song[], selectedIndex: number) {
     const modal = await this.modalCtrl.create({
       component: MusicPlayerComponent,
       componentProps: {
@@ -152,7 +152,7 @@ export class LibraryPage implements OnInit {
       this.selectedSong = new Song();
     });
     return await modal.present();
-  }
+  }*/
 
   private addNewSongs(apiSongs: Song[]): void {
     let addedSong = false;

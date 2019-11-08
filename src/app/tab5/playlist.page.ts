@@ -11,7 +11,9 @@ import { PlaylistService } from '../core/services/playlist.service';
 import { Song } from '../core/models/song.model';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { ModalController } from '@ionic/angular';
-import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+//import { MusicPlayerComponent } from '../core/components/music-player/music-player.component';
+
+
 
 @Component({
   selector: 'app-tab5',
