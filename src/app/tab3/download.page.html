@@ -12,7 +12,7 @@
     <ion-content fullscreen>
 
       <ion-list>
-        <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="false">
+        <ion-reorder-group  disabled="false">
 
           <ion-item *ngFor="let playlist of songsToDownload; let index = index" (click)="onClickDetails(songsToDownload,index)" >
             <ion-icon name="musical-notes" style="margin-right:5px; "></ion-icon>
