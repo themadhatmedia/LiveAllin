@@ -1,0 +1,100 @@
+<!-- Danger back button next to a menu button -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button color="danger"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Back To List</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding getstart" style="background-image: url('../../assets/logos/DashboardLogo.png');">
+  <!-- Playback section -->
+  <div text-center>
+    <!-- File name -->
+    <br>
+    <h1>{{ title }}</h1>
+    <br>
+
+    <!-- avatar -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+
+      <img src="{{ songsImage }}" alt="ihaveadream" style="width: 250px;border-radius: 50%;height: 250px;" />
+      <!-- <img src="../../assets/img/icon.png" alt="ihaveadream" style="width: 80%; " /> -->
+    </div>
+    <br>
+
+    <!-- control bar -->
+    <div>
+      <ion-range min="0" max="{{duration}}" [(ngModel)]="position">
+        <!--  [disabled]="is_in_play && is_playing"  -->
+        <ion-label slot="start">{{ position*1000 | date:'mm:ss' }} </ion-label>
+        <ion-label slot="end" *ngIf="duration == -1">--:--</ion-label>
+        <ion-label slot="end" *ngIf="duration != -1">{{ duration*1000 | date:'mm:ss' }}</ion-label>
+      </ion-range>
+    </div>
+
+
+    <!-- <ion-fab-button class="play-pause-btn" id="stopbtn" (click)="stopPlayRecording()" color="secondary" >
+            <ion-icon name="stop"></ion-icon>
+    </ion-fab-button> -->
+    
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-start">
+            <ion-icon name="shuffle" (click)="onIsShuffle(); toggleShuffle(isShuffle)" [ngClass]="{'isDisable': !isShuffle}"></ion-icon>            
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="ion-text-end" >
+            <ion-icon name="repeat" (click)="onIsRepeat(); toggleClass(isRepeat)" [ngClass]="{'isDisable': !isRepeat}"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center ion-justify-content-center" style="height: 100%">
+
+        <ion-col>
+          <!-- Backwards -->
+          <!-- <ion-fab-button class="skip-btn" color="danger" [disabled]="!isFirstPlaying" (click)="onPrevSongs(allSongs,current_index)">
+            &nbsp;&nbsp;<ion-icon name="skip-backward"></ion-icon>&nbsp;&nbsp;
+          </ion-fab-button> -->
+
+          <!-- Backwards -->
+          <ion-button class="skip-btn" color="primary" [disabled]="!is_ready || !is_in_play"
+            (click)="controlSeconds('back')"><ion-icon name="skip-backward"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col>
+          <!-- Play/Pause -->
+          <ion-button class="play-pause-btn" id="playbtn" (click)="playRecording()" color="secondary" *ngIf="!is_playing"
+            [disabled]="!is_ready">
+            <ion-icon name="play"></ion-icon>
+          </ion-button>
+
+          <ion-button class="play-pause-btn" (click)="pausePlayRecording()" color="warning" *ngIf="is_playing"
+            [disabled]="!is_ready">
+            <ion-icon name="pause"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col>
+          <!-- Forwards -->
+          <!-- <ion-fab-button class="skip-btn" color="danger" [disabled]="!isLastPlaying" (click)="onNextSongs(allSongs,current_index)">
+            &nbsp;&nbsp;<ion-icon name="skip-forward"></ion-icon>&nbsp;&nbsp;
+          </ion-fab-button> -->
+
+           <!-- Forwards -->
+          <ion-button class="skip-btn" color="primary" [disabled]="!is_ready || !is_in_play"
+            (click)="controlSeconds('forward')">
+            <ion-icon name="skip-forward"></ion-icon>
+          </ion-button>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </div>
+</ion-content>

@@ -16,10 +16,10 @@
   </ng-template>
 
   <ion-list *ngIf="files.length">
-    
+    <ion-list-header>Hello </ion-list-header>
     <ng-container *ngFor="let file of files; let i = index">
       <ion-item text-wrap (click)="openFile(file, i)">
-        <ion-icon color="primary" item-start name="musical-note"></ion-icon>{{ file.song_name }}
+        <ion-icon color="primary" item-start name="musical-note"></ion-icon>{{ file.name }}
         <p item-end *ngIf="currentFile.index === i">SELECTED </p>
         <ion-icon item-end name="play" *ngIf="currentFile.index !== i"></ion-icon>
       </ion-item>

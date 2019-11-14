@@ -67,7 +67,7 @@ export class HomePage {
   getDocuments() {
 
     this.downloadService.getDownloadlistSongs().subscribe(apiSongs => {
-      this.files = apiSongs;
+      this.listItems = apiSongs;
       console.log('Start My list');
       console.log(apiSongs);
       console.log('Start My list');
@@ -124,8 +124,7 @@ export class HomePage {
 
   openFile(file, index) {
     this.currentFile = { index, file };
-    //this.playStream(file.url);
-    this.playStream(file.song.audioUrl);
+    this.playStream(file.url);
   }
 
   resetState() {

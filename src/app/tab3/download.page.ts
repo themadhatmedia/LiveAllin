@@ -139,7 +139,7 @@ export class DownloadPage {
     console.log(next_songs);
     
     
-    let navigationExtras: NavigationExtras = {
+    /*let navigationExtras: NavigationExtras = {
       queryParams: {
         special: JSON.stringify(current_songs),
         current_index: index,
@@ -148,7 +148,9 @@ export class DownloadPage {
         prev: JSON.stringify(prev_songs)
       }
     };
-    this.router.navigate(['home'], navigationExtras);
+    this.router.navigate(['home'], navigationExtras);*/
+
+    this.router.navigate(['home']);
   }
 
 }

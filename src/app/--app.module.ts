@@ -35,20 +35,10 @@ import { SignupComponent } from './core/components/signup/signup.component';
 // import { environment } from './../environments/environment.prod';
 
 
-import { AudioProvider } from './providers/audio/audio';
-import { CloudProvider } from './providers/cloud/cloud';
-import { StoreModule } from '@ngrx/store';
-import { mediaStateReducer } from './providers/store/store';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 @NgModule({
   declarations: [AppComponent,  SignupComponent],
   entryComponents: [ SignupComponent],
   imports: [
-    BrowserAnimationsModule,
-    StoreModule.forRoot({
-      appState: mediaStateReducer
-    }),
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
@@ -67,8 +57,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     StreamingMedia,
     StatusBar,
     SplashScreen,
-    AudioProvider,
-    CloudProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
